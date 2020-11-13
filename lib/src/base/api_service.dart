@@ -3,7 +3,7 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 
-abstract class ApiHelper {
+abstract class ApiService {
   Future<Response<T>> get<T>({
     String endpoint,
     String url,

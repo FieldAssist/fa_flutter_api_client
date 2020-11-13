@@ -6,14 +6,14 @@ import 'package:flutter/material.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:path/path.dart';
 
-import 'base/api_helper.dart';
+import 'base/api_service.dart';
 import 'exceptions/errors.dart';
 import 'exceptions/exceptions.dart';
 import 'exceptions/my_exception.dart';
 import 'utils/mime_type.dart';
 
-class ApiHelperImpl implements ApiHelper {
-  ApiHelperImpl({
+class ApiServiceImpl implements ApiService {
+  ApiServiceImpl({
     @required this.baseUrl,
     this.interceptors,
   }) {
