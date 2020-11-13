@@ -1,4 +1,4 @@
-import 'my_exception.dart';
+import 'package:fa_flutter_core/fa_flutter_core.dart';
 
 class ClientException extends MyException {
   const ClientException({

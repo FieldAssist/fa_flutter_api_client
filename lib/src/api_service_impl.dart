@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
-import 'package:fa_flutter_api_client/src/utils/utils.dart';
+import 'package:fa_flutter_core/fa_flutter_core.dart';
 import 'package:flutter/material.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:path/path.dart';
@@ -9,7 +9,6 @@ import 'package:path/path.dart';
 import 'base/api_service.dart';
 import 'exceptions/errors.dart';
 import 'exceptions/exceptions.dart';
-import 'exceptions/my_exception.dart';
 import 'utils/mime_type.dart';
 
 class ApiServiceImpl implements ApiService {
