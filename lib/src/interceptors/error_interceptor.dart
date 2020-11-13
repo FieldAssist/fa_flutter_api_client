@@ -11,7 +11,7 @@ abstract class ErrorInterceptor extends Interceptor {
     } else if (err.type == DioErrorType.RESPONSE) {
       final code = err.response.statusCode;
       if (code == 401) {
-        onUnauthorizedError();
+        await onUnauthorizedError();
         return UnauthorizedError();
       } else if (code >= 400 && code < 500) {
         return ClientError(
@@ -32,5 +32,5 @@ abstract class ErrorInterceptor extends Interceptor {
     return UnknownError(err?.toString());
   }
 
-  void onUnauthorizedError();
+  Future<void> onUnauthorizedError();
 }
