@@ -181,4 +181,9 @@ class ApiServiceImpl implements ApiService {
   Dio getDioFile() {
     return _dioFile;
   }
+
+  @override
+  Dio getApiClient() {
+    return _dio;
+  }
 }

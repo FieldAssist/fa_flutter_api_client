@@ -24,4 +24,6 @@ abstract class ApiService {
   String getFileUploadUrl();
 
   Dio getDioFile();
+
+  Dio getApiClient();
 }
