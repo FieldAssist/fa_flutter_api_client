@@ -50,100 +50,42 @@ class ApiServiceImpl implements ApiService {
 
   @override
   Future<Response<T>> post<T>({String endpoint, String body}) async {
-    try {
-      return await _dio.post<T>('$baseUrl$endpoint', data: body);
-    } on ClientError catch (e, s) {
-      throw ClientException(
-        statusCode: e.response.statusCode,
-        msg: e.response.data ?? e.response.statusMessage,
-      );
-    } on UnauthorizedError {
-      throw UnauthorizedException();
-    } on ServerError catch (e, s) {
-      throw ServerException(e.toString());
-    } on NoInternetError {
-      throw NoInternetException();
-    } on UnknownError catch (e, s) {
-      throw UnknownException('Oops! Something went wrong.\n\n${e.toString()}');
-    }
+    return _dio.post<T>('$baseUrl$endpoint', data: body).catchError(_onError);
   }
 
   @override
   Future<Response<T>> delete<T>({String endpoint}) async {
-    try {
-      return await _dio.delete<T>('$baseUrl$endpoint');
-    } on ClientError catch (e, s) {
-      throw ClientException(
-        statusCode: e.response.statusCode,
-        msg: e.response.data ?? e.response.statusMessage,
-      );
-    } on UnauthorizedError {
-      throw UnauthorizedException();
-    } on ServerError catch (e, s) {
-      throw ServerException(e.toString());
-    } on NoInternetError {
-      throw NoInternetException();
-    } on UnknownError catch (e, s) {
-      throw UnknownException('Oops! Something went wrong.\n\n${e.toString()}');
-    }
+    return _dio.delete<T>('$baseUrl$endpoint').catchError(_onError);
   }
 
   @override
   Future<Response<T>> put<T>({String endpoint, String body}) async {
-    try {
-      return await _dio.put<T>('$baseUrl$endpoint', data: body);
-    } on ClientError catch (e, s) {
-      throw ClientException(
-        statusCode: e.response.statusCode,
-        msg: e.response.data ?? e.response.statusMessage,
-      );
-    } on UnauthorizedError {
-      throw UnauthorizedException();
-    } on ServerError catch (e, s) {
-      throw ServerException(e.toString());
-    } on NoInternetError {
-      throw NoInternetException();
-    } on UnknownError catch (e, s) {
-      throw UnknownException('Oops! Something went wrong.\n\n${e.toString()}');
-    }
+    return _dio.put<T>('$baseUrl$endpoint', data: body).catchError(_onError);
   }
 
   @override
   Future<Response<T>> postFile<T>({File file}) async {
-    try {
-      if (file == null) {
-        throw const MyException("Attached file is null");
-      }
-      final fileName = basename(file.path);
-      var mimeType = mime(fileName);
-      mimeType ??= 'application/octet-stream';
-      final type = mimeType.split('/')[0];
-      final subType = mimeType.split('/')[1];
-      final formData = FormData.fromMap({
-        'asset': await MultipartFile.fromFile(
-          file.path,
-          filename: fileName,
-          contentType: MediaType(type, subType),
-        ),
-      });
-      return await _dioFile.post(
-        getFileUploadUrl(),
-        data: formData,
-      );
-    } on ClientError catch (e, s) {
-      throw ClientException(
-        statusCode: e.response.statusCode,
-        msg: e.response.data ?? e.response.statusMessage,
-      );
-    } on UnauthorizedError {
-      throw UnauthorizedException();
-    } on ServerError catch (e, s) {
-      throw ServerException(e.toString());
-    } on NoInternetError {
-      throw NoInternetException();
-    } on UnknownError catch (e, s) {
-      throw UnknownException('Oops! Something went wrong.\n\n${e.toString()}');
+    if (file == null) {
+      throw const MyException("Attached file is null");
     }
+    final fileName = basename(file.path);
+    var mimeType = mime(fileName);
+    mimeType ??= 'application/octet-stream';
+    final type = mimeType.split('/')[0];
+    final subType = mimeType.split('/')[1];
+    final formData = FormData.fromMap({
+      'asset': await MultipartFile.fromFile(
+        file.path,
+        filename: fileName,
+        contentType: MediaType(type, subType),
+      ),
+    });
+    return _dioFile
+        .post(
+          getFileUploadUrl(),
+          data: formData,
+        )
+        .catchError(_onError);
   }
 
   @override
