@@ -45,7 +45,7 @@ class ApiServiceImpl implements ApiService {
   }) async {
     return _dio
         .get<T>(checkIfNotEmpty(url) ? '$url' : '$baseUrl$endpoint')
-        .catchError(_onError, test: (_) => false);
+        .catchError(_onError);
   }
 
   @override
