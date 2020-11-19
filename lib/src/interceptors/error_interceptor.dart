@@ -27,7 +27,7 @@ abstract class ErrorInterceptor extends Interceptor {
         );
       }
     } else if (err.error is SocketException) {
-      return NoInternetError();
+      return UnstableInternetError();
     }
     return UnknownError(err?.toString());
   }

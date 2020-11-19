@@ -31,6 +31,8 @@ class ServerError extends DioError {
 
 class NoInternetError extends DioError {}
 
+class UnstableInternetError extends DioError {}
+
 class UnauthorizedError extends DioError {}
 
 class UnknownError extends DioError {

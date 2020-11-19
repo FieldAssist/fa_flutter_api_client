@@ -18,6 +18,10 @@ class NoInternetException extends MyException {
   const NoInternetException() : super('Please check your internet connection');
 }
 
+class UnstableInternetException extends MyException {
+  const UnstableInternetException() : super('Poor internet connection');
+}
+
 class ServerException extends MyException {
   const ServerException(String message) : super(message);
 }

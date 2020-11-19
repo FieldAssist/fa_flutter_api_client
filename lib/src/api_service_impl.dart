@@ -43,25 +43,9 @@ class ApiServiceImpl implements ApiService {
     String endpoint,
     String url,
   }) async {
-    try {
-      if (checkIfNotEmpty(url)) {
-        return await _dio.get<T>('$url');
-      }
-      return await _dio.get<T>('$baseUrl$endpoint');
-    } on ClientError catch (e, s) {
-      throw ClientException(
-        statusCode: e.response.statusCode,
-        msg: e.response.data ?? e.response.statusMessage,
-      );
-    } on UnauthorizedError {
-      throw UnauthorizedException();
-    } on ServerError catch (e, s) {
-      throw ServerException(e.toString());
-    } on NoInternetError {
-      throw NoInternetException();
-    } on UnknownError catch (e, s) {
-      throw UnknownException('Oops! Something went wrong.\n\n${e.toString()}');
-    }
+    return _dio
+        .get<T>(checkIfNotEmpty(url) ? '$url' : '$baseUrl$endpoint')
+        .catchError(_onError, test: (_) => false);
   }
 
   @override
@@ -185,5 +169,24 @@ class ApiServiceImpl implements ApiService {
   @override
   Dio getApiClient() {
     return _dio;
+  }
+
+  _onError(e) {
+    if (e is ClientError) {
+      throw ClientException(
+        statusCode: e.response.statusCode,
+        msg: e.response.data ?? e.response.statusMessage,
+      );
+    } else if (e is UnauthorizedError) {
+      throw UnauthorizedException();
+    } else if (e is ServerError) {
+      throw ServerException(e.toString());
+    } else if (e is NoInternetError) {
+      throw NoInternetException();
+    } else if (e is UnstableInternetError) {
+      throw UnstableInternetException();
+    } else {
+      throw UnknownException('Oops! Something went wrong.\n\n${e.toString()}');
+    }
   }
 }
