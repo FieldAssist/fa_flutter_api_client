@@ -1,4 +1,4 @@
-# fa_flutter_api_client
+# fa_flutter_api_client [![codecov](https://codecov.io/gh/FieldAssist/fa_flutter_api_client/branch/main/graph/badge.svg?token=O3H9UI8723)](https://codecov.io/gh/FieldAssist/fa_flutter_api_client)
 
 Official FA Flutter API client package.
 
