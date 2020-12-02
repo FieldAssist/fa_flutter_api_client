@@ -9,7 +9,6 @@ import 'package:path/path.dart';
 import 'base/api_service.dart';
 import 'exceptions/errors.dart';
 import 'exceptions/exceptions.dart';
-import 'utils/mime_type.dart';
 
 class ApiServiceImpl implements ApiService {
   ApiServiceImpl({
