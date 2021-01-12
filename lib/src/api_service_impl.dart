@@ -63,7 +63,10 @@ class ApiServiceImpl implements ApiService {
   }
 
   @override
-  Future<Response<T>> postFile<T>({File file}) async {
+  Future<Response<T>> postFile<T>({
+    File file,
+    ProgressCallback onSendProgress,
+  }) async {
     if (file == null) {
       throw const MyException("Attached file is null");
     }
@@ -83,6 +86,7 @@ class ApiServiceImpl implements ApiService {
         .post(
           getFileUploadUrl(),
           data: formData,
+          onSendProgress: onSendProgress,
         )
         .catchError(_onError);
   }
