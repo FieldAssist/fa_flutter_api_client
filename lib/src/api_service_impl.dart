@@ -44,22 +44,22 @@ class ApiServiceImpl implements ApiService {
   }) async {
     return _dio
         .get<T>(checkIfNotEmpty(url) ? '$url' : '$baseUrl$endpoint')
-        .catchError(_onError);
+        .catchError(onError);
   }
 
   @override
   Future<Response<T>> post<T>({String endpoint, String body}) async {
-    return _dio.post<T>('$baseUrl$endpoint', data: body).catchError(_onError);
+    return _dio.post<T>('$baseUrl$endpoint', data: body).catchError(onError);
   }
 
   @override
   Future<Response<T>> delete<T>({String endpoint}) async {
-    return _dio.delete<T>('$baseUrl$endpoint').catchError(_onError);
+    return _dio.delete<T>('$baseUrl$endpoint').catchError(onError);
   }
 
   @override
   Future<Response<T>> put<T>({String endpoint, String body}) async {
-    return _dio.put<T>('$baseUrl$endpoint', data: body).catchError(_onError);
+    return _dio.put<T>('$baseUrl$endpoint', data: body).catchError(onError);
   }
 
   @override
@@ -88,7 +88,7 @@ class ApiServiceImpl implements ApiService {
           data: formData,
           onSendProgress: onSendProgress,
         )
-        .catchError(_onError);
+        .catchError(onError);
   }
 
   @override
@@ -116,7 +116,7 @@ class ApiServiceImpl implements ApiService {
     return _dio;
   }
 
-  _onError(e) {
+  onError(e) {
     if (e is ClientError) {
       throw ClientException(
         statusCode: e.response.statusCode,
