@@ -22,8 +22,8 @@ abstract class ErrorInterceptor extends Interceptor {
         );
       } else if (code == 500) {
         return ServerError(
-          'Server Error: ${err.response.statusCode} '
-          '${err.response.data ?? err.response.statusMessage}',
+          'Server Error: ${err.response.statusCode}'
+          '\n\n${err.response.data ?? err.response.statusMessage}',
         );
       } else if (code >= 501 && code < 600) {
         return ServerError(
