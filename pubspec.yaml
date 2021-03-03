@@ -12,14 +12,12 @@ dependencies:
   flutter:
     sdk: flutter
   dio: ^3.0.10
-  path_provider: ^1.6.24
 
   # Core
   fa_flutter_core:
     git:
       url: https://github.com/FieldAssist/fa_flutter_core.git
       ref: main
-
 
 dev_dependencies:
   flutter_test:
