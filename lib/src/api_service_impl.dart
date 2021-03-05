@@ -42,7 +42,7 @@ class ApiServiceImpl implements ApiService {
     String? url,
   }) async {
     return _dio!
-        .get<T>(checkIfNotEmpty(url!) ? '$url' : '$baseUrl$endpoint')
+        .get<T>(checkIfNotEmpty(url) ? '$url' : '$baseUrl$endpoint')
         .catchError(onError);
   }
 
