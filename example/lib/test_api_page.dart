@@ -9,7 +9,7 @@ class TestApiPage extends StatefulWidget {
 
 class _TestApiPageState extends State<TestApiPage> {
   bool _isLoading = true;
-  String _data;
+  String? _data;
 
   @override
   void initState() {
@@ -24,7 +24,7 @@ class _TestApiPageState extends State<TestApiPage> {
         title: Text('Api Client'),
       ),
       body: Center(
-        child: _isLoading ? CircularProgressIndicator() : Text(_data),
+        child: _isLoading ? CircularProgressIndicator() : Text(_data!),
       ),
     );
   }

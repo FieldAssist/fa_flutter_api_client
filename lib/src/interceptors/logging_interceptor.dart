@@ -28,13 +28,13 @@ abstract class LoggingInterceptor extends Interceptor {
   Future onError(DioError err) async {
     logPrint('*** Api Error - Start ***:');
 
-    logPrint('URI: ${err.request.uri}');
+    logPrint('URI: ${err.request!.uri}');
     if (err.response != null) {
-      logPrint('STATUS CODE: ${err.response.statusCode?.toString()}');
+      logPrint('STATUS CODE: ${err.response!.statusCode?.toString()}');
     }
     logPrint('$err');
     if (err.response != null) {
-      printKV('REDIRECT', err.response.isRedirect);
+      printKV('REDIRECT', err.response!.isRedirect);
       logPrint('BODY:');
       printAll(err.response?.toString());
     }
@@ -47,7 +47,7 @@ abstract class LoggingInterceptor extends Interceptor {
   Future onResponse(Response response) async {
     logPrint('*** Api Response - Start ***');
 
-    printKV('URI', response.request?.uri);
+    printKV('URI', response.request.uri);
     printKV('STATUS CODE', response.statusCode);
     printKV('REDIRECT', response.isRedirect);
     logPrint('BODY:');
@@ -58,7 +58,7 @@ abstract class LoggingInterceptor extends Interceptor {
     return response;
   }
 
-  void printKV(String key, Object v) {
+  void printKV(String key, Object? v) {
     logPrint('$key: $v');
   }
 

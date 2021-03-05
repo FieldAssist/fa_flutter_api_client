@@ -4,7 +4,7 @@ class ClientError extends DioError {
   ClientError({
     request,
     response,
-    type = DioErrorType.DEFAULT,
+    type = DioErrorType.other,
     error,
   }) : super(
           request: request,
@@ -15,8 +15,8 @@ class ClientError extends DioError {
 
   @override
   String toString() {
-    return 'Server Error: ${response.statusCode} '
-        '${response.data ?? response.statusMessage}';
+    return 'Server Error: ${response!.statusCode} '
+        '${response!.data ?? response!.statusMessage}';
   }
 }
 

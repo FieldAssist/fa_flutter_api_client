@@ -2,11 +2,11 @@ import 'package:fa_flutter_core/fa_flutter_core.dart';
 
 class ClientException extends MyException {
   const ClientException({
-    this.msg,
+    required this.msg,
     this.statusCode,
   }) : super(msg);
   final String msg;
-  final int statusCode;
+  final int? statusCode;
 
   @override
   String toString() {
@@ -32,5 +32,6 @@ class UnauthorizedException extends MyException {
 
 class UnknownException extends MyException {
   const UnknownException(String msg)
+      // ignore: dead_null_aware_expression
       : super(msg ?? 'Some unknown error occured, Please try again');
 }

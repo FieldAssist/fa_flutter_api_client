@@ -1,11 +1,10 @@
 import 'package:fa_flutter_api_client/fa_flutter_api_client.dart';
-import 'package:meta/meta.dart';
 
 import 'network/network_info.dart';
 
 class MyNetworkInterceptor extends NetworkInterceptor {
   MyNetworkInterceptor({
-    @required this.networkInfo,
+    required this.networkInfo,
   });
 
   final NetworkInfo networkInfo;
