@@ -28,7 +28,7 @@ packages:
       name: build_context
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.4"
+    version: "3.0.0"
   characters:
     dependency: transitive
     description:
@@ -64,12 +64,30 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "4.0.0-beta6"
+  fa_dart_core:
+    dependency: transitive
+    description:
+      path: "."
+      ref: main
+      resolved-ref: "0bbbe5886988959fae284612cb3747fc947a2704"
+      url: "https://github.com/FieldAssist/fa_dart_core.git"
+    source: git
+    version: "2.0.0+2"
+  fa_dart_logger:
+    dependency: transitive
+    description:
+      path: "."
+      ref: main
+      resolved-ref: e80a4ea2624ac77c847bcd21f68542ed732ba87d
+      url: "https://github.com/FieldAssist/fa_dart_logger.git"
+    source: git
+    version: "1.0.0"
   fa_flutter_core:
     dependency: "direct main"
     description:
       path: "."
       ref: main
-      resolved-ref: f4c1c20e10dba659e0cc45f02febc2576201c840
+      resolved-ref: a7805f926311a22f8812ce8dc5b31d13b358cf2d
       url: "https://github.com/FieldAssist/fa_flutter_core.git"
     source: git
     version: "2.0.0+2"
@@ -213,7 +231,7 @@ packages:
       name: shared_preferences
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.3"
+    version: "2.0.4"
   shared_preferences_linux:
     dependency: transitive
     description:
