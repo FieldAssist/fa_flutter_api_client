@@ -31,7 +31,5 @@ class UnauthorizedException extends MyException {
 }
 
 class UnknownException extends MyException {
-  const UnknownException(String msg)
-      // ignore: dead_null_aware_expression
-      : super(msg ?? 'Some unknown error occured, Please try again');
+  const UnknownException(String msg) : super(msg);
 }
