@@ -40,19 +40,7 @@ class ServerError extends DioError {
 
 class NoInternetError implements Exception {}
 
-class UnstableInternetError extends DioError {
-  UnstableInternetError({
-    required requestOptions,
-    response,
-    type = DioErrorType.other,
-    error,
-  }) : super(
-          requestOptions: requestOptions,
-          response: response,
-          type: type,
-          error: error,
-        );
-}
+class UnstableInternetError implements Exception {}
 
 class UnauthorizedError extends DioError {
   UnauthorizedError({

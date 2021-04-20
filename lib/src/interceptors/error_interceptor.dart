@@ -43,7 +43,7 @@ class ErrorInterceptor extends Interceptor {
           ),
         );
       } else if (error.error is SocketException) {
-        throw NoInternetError();
+        throw UnstableInternetError();
       }
     }
     return handler.reject(
