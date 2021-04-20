@@ -71,7 +71,6 @@ class ApiServiceImpl implements ApiService {
     }
     final fileName = basename(file.path);
     var mimeType = mime(fileName);
-    // ignore: dead_null_aware_expression
     mimeType ??= 'application/octet-stream';
     final type = mimeType.split('/')[0];
     final subType = mimeType.split('/')[1];

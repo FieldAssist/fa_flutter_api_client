@@ -11,7 +11,10 @@ abstract class LoggingInterceptor extends Interceptor {
   LoggingInterceptor();
 
   @override
-  Future onRequest(RequestOptions options) async {
+  Future onRequest(
+    RequestOptions options,
+    RequestInterceptorHandler handler,
+  ) async {
     logPrint('*** API Request - Start ***');
 
     printKV('URI', options.uri);
@@ -22,13 +25,17 @@ abstract class LoggingInterceptor extends Interceptor {
     printAll(options.data ?? "");
 
     logPrint('*** API Request - End ***');
+    handler.next(options);
   }
 
   @override
-  Future onError(DioError err) async {
+  Future<void> onError(
+    DioError err,
+    ErrorInterceptorHandler handler,
+  ) async {
     logPrint('*** Api Error - Start ***:');
 
-    logPrint('URI: ${err.request!.uri}');
+    logPrint('URI: ${err.requestOptions.uri}');
     if (err.response != null) {
       logPrint('STATUS CODE: ${err.response!.statusCode?.toString()}');
     }
@@ -40,14 +47,17 @@ abstract class LoggingInterceptor extends Interceptor {
     }
 
     logPrint('*** Api Error - End ***:');
-    return err;
+    return handler.next(err);
   }
 
   @override
-  Future onResponse(Response response) async {
+  Future<void> onResponse(
+    Response response,
+    ResponseInterceptorHandler handler,
+  ) async {
     logPrint('*** Api Response - Start ***');
 
-    printKV('URI', response.request.uri);
+    printKV('URI', response.requestOptions.uri);
     printKV('STATUS CODE', response.statusCode);
     printKV('REDIRECT', response.isRedirect);
     logPrint('BODY:');
@@ -55,7 +65,7 @@ abstract class LoggingInterceptor extends Interceptor {
 
     logPrint('*** Api Response - End ***');
 
-    return response;
+    return handler.next(response);
   }
 
   void printKV(String key, Object? v) {

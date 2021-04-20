@@ -1,7 +1,7 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="main.dart" type="FlutterRunConfigurationType" factoryName="Flutter" nameIsGenerated="true">
     <option name="additionalArgs" value="--no-sound-null-safety" />
-    <option name="filePath" value="$PROJECT_DIR$/example/lib/main.dart" />
+    <option name="filePath" value="$PROJECT_DIR$/example2/lib/main.dart" />
     <method v="2" />
   </configuration>
 </component>

@@ -1,41 +1,62 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
-import 'package:fa_flutter_api_client/src/exceptions/errors.dart';
+import 'package:fa_flutter_api_client/fa_flutter_api_client.dart';
 
-abstract class ErrorInterceptor extends Interceptor {
+class ErrorInterceptor extends Interceptor {
   @override
-  Future onError(DioError err) async {
-    if (err is NoInternetError) {
-      return NoInternetError();
-    } else if (err.type == DioErrorType.response) {
-      final code = err.response!.statusCode;
-      if (code == 401) {
-        await onUnauthorizedError();
-        return UnauthorizedError();
-      } else if (code! >= 400 && code < 500) {
-        return ClientError(
-          request: err.request,
-          response: err.response,
-          type: err.type,
-          error: err.error,
-        );
-      } else if (code == 500) {
-        return ServerError(
-          'Server Error: ${err.response!.statusCode}'
-          '\n\n${err.response!.data ?? err.response!.statusMessage}',
-        );
-      } else if (code >= 501 && code < 600) {
-        return ServerError(
-          'Server Error: ${err.response!.statusCode}'
-          '\n\nPlease retry later',
-        );
-      }
-    } else if (err.error is SocketException) {
-      return UnstableInternetError();
+  Future<void> onError(
+    DioError error,
+    ErrorInterceptorHandler handler,
+  ) async {
+    if (error is NoInternetError) {
+      throw NoInternetError();
     }
-    return UnknownError(err.toString());
+    if (error.type == DioErrorType.response) {
+      final code = error.response!.statusCode;
+      if (code == 401 || code == 403) {
+        // Delaying for 300ms so that other futures
+        // can complete before navigating to unauthorizedScreen
+        Future.delayed(
+          const Duration(milliseconds: 300),
+          handleUnauthorizedUser,
+        );
+        // Returning null as we handled the error
+        return null;
+      } else if (code! >= 400 && code < 500) {
+        return handler.reject(
+          ClientError(
+            requestOptions: error.requestOptions,
+            response: error.response,
+            type: error.type,
+            error: error.error,
+          ),
+        );
+      } else if (code >= 500 && code < 600) {
+        return handler.reject(
+          ServerError(
+            requestOptions: error.requestOptions,
+            response: error.response,
+            type: error.type,
+            error: error.error,
+          ),
+        );
+      } else if (error.error is SocketException) {
+        throw NoInternetError();
+      }
+    }
+    return handler.reject(
+      UnknownApiError(
+        requestOptions: error.requestOptions,
+        response: error.response,
+        type: error.type,
+        error: error.error,
+      ),
+    );
   }
 
-  Future<void> onUnauthorizedError();
+  FutureOr handleUnauthorizedUser() {
+    return throw UnimplementedError();
+  }
 }

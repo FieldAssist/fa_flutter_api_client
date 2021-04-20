@@ -2,12 +2,12 @@ import 'package:dio/dio.dart';
 
 class ClientError extends DioError {
   ClientError({
-    request,
+    requestOptions,
     response,
     type = DioErrorType.other,
     error,
   }) : super(
-          request: request,
+          requestOptions: requestOptions,
           response: response,
           type: type,
           error: error,
@@ -15,31 +15,69 @@ class ClientError extends DioError {
 
   @override
   String toString() {
-    return 'Server Error: ${response!.statusCode} '
+    return 'Client Error: ${response!.statusCode} '
         '${response!.data ?? response!.statusMessage}';
   }
 }
 
 class ServerError extends DioError {
-  ServerError(this.msg);
-
-  final String msg;
+  ServerError({
+    required requestOptions,
+    response,
+    type = DioErrorType.other,
+    error,
+  }) : super(
+          requestOptions: requestOptions,
+          response: response,
+          type: type,
+          error: error,
+        );
 
   @override
-  String toString() => msg;
+  String toString() => 'Server Error: ${response!.statusCode} '
+      '${response!.data ?? response!.statusMessage}';
 }
 
-class NoInternetError extends DioError {}
+class NoInternetError implements Exception {}
 
-class UnstableInternetError extends DioError {}
+class UnstableInternetError extends DioError {
+  UnstableInternetError({
+    required requestOptions,
+    response,
+    type = DioErrorType.other,
+    error,
+  }) : super(
+          requestOptions: requestOptions,
+          response: response,
+          type: type,
+          error: error,
+        );
+}
 
-class UnauthorizedError extends DioError {}
+class UnauthorizedError extends DioError {
+  UnauthorizedError({
+    required requestOptions,
+    response,
+    type = DioErrorType.other,
+    error,
+  }) : super(
+          requestOptions: requestOptions,
+          response: response,
+          type: type,
+          error: error,
+        );
+}
 
-class UnknownError extends DioError {
-  UnknownError(this.msg);
-
-  final String msg;
-
-  @override
-  String toString() => msg;
+class UnknownApiError extends DioError {
+  UnknownApiError({
+    required requestOptions,
+    response,
+    type = DioErrorType.other,
+    error,
+  }) : super(
+          requestOptions: requestOptions,
+          response: response,
+          type: type,
+          error: error,
+        );
 }
