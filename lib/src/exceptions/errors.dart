@@ -38,9 +38,19 @@ class ServerError extends DioError {
       '${response!.data ?? response!.statusMessage}';
 }
 
-class NoInternetError implements Exception {}
+class NoInternetError implements Exception {
+  @override
+  String toString() {
+    return 'Please check your internet connection';
+  }
+}
 
-class UnstableInternetError implements Exception {}
+class UnstableInternetError implements Exception {
+  @override
+  String toString() {
+    return 'Poor internet connection';
+  }
+}
 
 class UnauthorizedError extends DioError {
   UnauthorizedError({
@@ -54,6 +64,11 @@ class UnauthorizedError extends DioError {
           type: type,
           error: error,
         );
+
+  @override
+  String toString() {
+    return 'Unauthorized, Please try again';
+  }
 }
 
 class UnknownApiError extends DioError {
@@ -68,4 +83,9 @@ class UnknownApiError extends DioError {
           type: type,
           error: error,
         );
+
+  @override
+  String toString() {
+    return 'Oops! Something went wrong.\n\n${super.toString()}';
+  }
 }

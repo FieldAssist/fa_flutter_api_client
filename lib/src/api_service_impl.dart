@@ -6,8 +6,6 @@ import 'package:http_parser/http_parser.dart';
 import 'package:path/path.dart';
 
 import 'base/api_service.dart';
-import 'exceptions/errors.dart';
-import 'exceptions/exceptions.dart';
 
 class ApiServiceImpl implements ApiService {
   ApiServiceImpl({
@@ -41,24 +39,22 @@ class ApiServiceImpl implements ApiService {
     String? endpoint,
     String? url,
   }) async {
-    return _dio!
-        .get<T>(checkIfNotEmpty(url) ? '$url' : '$baseUrl$endpoint')
-        .catchError(onError);
+    return _dio!.get<T>(checkIfNotEmpty(url) ? '$url' : '$baseUrl$endpoint');
   }
 
   @override
   Future<Response<T>> post<T>({String? endpoint, String? body}) async {
-    return _dio!.post<T>('$baseUrl$endpoint', data: body).catchError(onError);
+    return _dio!.post<T>('$baseUrl$endpoint', data: body);
   }
 
   @override
   Future<Response<T>> delete<T>({String? endpoint}) async {
-    return _dio!.delete<T>('$baseUrl$endpoint').catchError(onError);
+    return _dio!.delete<T>('$baseUrl$endpoint');
   }
 
   @override
   Future<Response<T>> put<T>({String? endpoint, String? body}) async {
-    return _dio!.put<T>('$baseUrl$endpoint', data: body).catchError(onError);
+    return _dio!.put<T>('$baseUrl$endpoint', data: body);
   }
 
   @override
@@ -81,13 +77,11 @@ class ApiServiceImpl implements ApiService {
         contentType: MediaType(type, subType),
       ),
     });
-    return _dioFile!
-        .post<T>(
-          getFileUploadUrl(),
-          data: formData,
-          onSendProgress: onSendProgress,
-        )
-        .catchError(onError);
+    return _dioFile!.post<T>(
+      getFileUploadUrl(),
+      data: formData,
+      onSendProgress: onSendProgress,
+    );
   }
 
   @override
@@ -113,24 +107,5 @@ class ApiServiceImpl implements ApiService {
   @override
   Dio? getApiClient() {
     return _dio;
-  }
-
-  onError(e) {
-    if (e is ClientError) {
-      throw ClientException(
-        statusCode: e.response!.statusCode,
-        msg: e.response!.data ?? e.response!.statusMessage!,
-      );
-    } else if (e is UnauthorizedError) {
-      throw UnauthorizedException();
-    } else if (e is ServerError) {
-      throw ServerException(e.toString());
-    } else if (e is NoInternetError) {
-      throw NoInternetException();
-    } else if (e is UnstableInternetError) {
-      throw UnstableInternetException();
-    } else {
-      throw UnknownException('Oops! Something went wrong.\n\n${e.toString()}');
-    }
   }
 }
