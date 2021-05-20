@@ -15,15 +15,24 @@ class ErrorInterceptor extends Interceptor {
     }
     if (error.type == DioErrorType.response) {
       final code = error.response!.statusCode;
-      if (code == 401 || code == 403) {
+      if (code == 401) {
         // Delaying for 300ms so that other futures
         // can complete before navigating to unauthorizedScreen
         Future.delayed(
           const Duration(milliseconds: 300),
-          handleUnauthorizedUser,
+          handleUnauthenticatedUser,
         );
         // Returning null as we handled the error
         return null;
+      } else if (code == 403) {
+        return handler.reject(
+          UnauthorizedError(
+            requestOptions: error.requestOptions,
+            response: error.response,
+            type: error.type,
+            error: error.error,
+          ),
+        );
       } else if (code! >= 400 && code < 500) {
         return handler.reject(
           ClientError(
@@ -56,7 +65,7 @@ class ErrorInterceptor extends Interceptor {
     );
   }
 
-  FutureOr handleUnauthorizedUser() {
+  FutureOr handleUnauthenticatedUser() {
     return throw UnimplementedError();
   }
 }
