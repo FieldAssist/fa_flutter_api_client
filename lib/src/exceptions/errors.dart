@@ -71,6 +71,25 @@ class UnauthorizedError extends DioError {
   }
 }
 
+class UnauthenticatedError extends DioError {
+  UnauthenticatedError({
+    required requestOptions,
+    response,
+    type = DioErrorType.other,
+    error,
+  }) : super(
+          requestOptions: requestOptions,
+          response: response,
+          type: type,
+          error: error,
+        );
+
+  @override
+  String toString() {
+    return 'Unauthenticated, Please try again';
+  }
+}
+
 class UnknownApiError extends DioError {
   UnknownApiError({
     required requestOptions,
