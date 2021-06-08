@@ -11,7 +11,14 @@ class ErrorInterceptor extends Interceptor {
     ErrorInterceptorHandler handler,
   ) async {
     if (error is NoInternetError) {
-      throw NoInternetError();
+      return handler.reject(
+        NoInternetError(
+          requestOptions: error.requestOptions,
+          response: error.response,
+          type: error.type,
+          error: error.error,
+        ),
+      );
     }
     if (error.type == DioErrorType.response) {
       final code = error.response!.statusCode;
@@ -52,7 +59,14 @@ class ErrorInterceptor extends Interceptor {
           ),
         );
       } else if (error.error is SocketException) {
-        throw UnstableInternetError();
+        return handler.reject(
+          UnstableInternetError(
+            requestOptions: error.requestOptions,
+            response: error.response,
+            type: error.type,
+            error: error.error,
+          ),
+        );
       }
     }
     return handler.reject(

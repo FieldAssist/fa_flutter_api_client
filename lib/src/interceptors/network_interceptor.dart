@@ -12,7 +12,14 @@ abstract class NetworkInterceptor extends Interceptor {
     if (!isConnected) {
       // Intentional delay to mimic making server request behavior
       await Future.delayed(getDelay());
-      throw NoInternetError();
+      return handler.reject(
+        NoInternetError(
+          requestOptions: options,
+          response: Response(requestOptions: options),
+          type: DioErrorType.other,
+          error: 'No Internet Error',
+        ),
+      );
     }
     return handler.next(options);
   }
