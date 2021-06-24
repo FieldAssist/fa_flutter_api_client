@@ -12,3 +12,14 @@ Add following code in `pubspec.yaml` file in `dependencies`:
       url: https://github.com/FieldAssist/fa_flutter_api_client.git
       ref: main
 ```
+
+## Migration Guide
+
+All of the following exceptions defined in exceptions in this package have been renamed to errors as follows:
+
+1. `ServerException` -> `ServerError`
+2. `UnauthorizedException` -> `UnauthorizedError`
+3. `UnauthenticatedException` -> `UnauthenticatedError`
+4. `UnknownApiException` -> `UnknownApiError`
+5. `NoInternetException` -> `NoInternetError`
+6. `UnstableInternetException` -> `UnstableInternetError`
