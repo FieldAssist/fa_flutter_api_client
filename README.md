@@ -36,6 +36,8 @@ Authentication Token Error Interception:- Similarly to the network error interce
 
 ## Example
 
+AuthInterceptor
+
 import 'package:dio/dio.dart';
 import 'package:fa_flutter_api_client/fa_flutter_api_client.dart';
 import 'package:fa_flutter_gt/data/contract/user_repository.dart';
@@ -52,5 +54,34 @@ class MyAuthInterceptor extends AuthInterceptor {
       options.headers['Authorization'] = 'Bearer $token';
     }
     return handler.next(options);
+  }
+}
+
+ErrorInterceptor
+
+import 'package:fa_flutter_api_client/fa_flutter_api_client.dart';
+
+class MyErrorInterceptor extends ErrorInterceptor {
+  //TODO(Aashishm178):Handle unAuthorize
+}
+
+NetworkInterceptor
+
+import 'package:fa_flutter_api_client/fa_flutter_api_client.dart';
+import 'package:fa_flutter_core/fa_flutter_core.dart';
+import 'package:fa_flutter_gt/core/network/network_info.dart';
+
+class MyNetworkInterceptor extends NetworkInterceptor {
+  MyNetworkInterceptor(this.networkInfo);
+
+  final NetworkInfo? networkInfo;
+
+  @override
+  Future<bool> isInternetConnected() async {
+    if (isWeb) {
+      return true;
+    }
+
+    return networkInfo!.isConnected;
   }
 }
