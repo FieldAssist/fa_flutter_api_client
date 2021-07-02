@@ -34,7 +34,7 @@ class _TestApiPageState extends State<TestApiPage> {
   Future<void> _init() async {
     try {
       final response = await locator<ApiService>().get(
-        url: 'https://jsonplaceholer.typicode.com/posts',
+        url: 'https://jsonplaceholder.typicode.com/posts',
       );
       setState(() {
         _isLoading = false;

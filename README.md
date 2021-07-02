@@ -23,3 +23,34 @@ All of the following exceptions defined in exceptions in this package have been 
 4. `UnknownApiException` -> `UnknownApiError`
 5. `NoInternetException` -> `NoInternetError`
 6. `UnstableInternetException` -> `UnstableInternetError`
+
+## Introduction and Usage
+
+Fa_Flutter_API_Client is a customised implementation of API_client. It serves as a base for other FieldAssist apps.
+This package is used to implemented Dio effortlessly into other FieldAssist apps.
+
+The basic functionalities that this package offers are:-
+Error Logging:- It logs any error that happens in the API during its run. It does so using the logger.
+Network Error Interception:- Whenever the network is unavailable, the error is intercepted, and the red screen of error is avoided on the device.
+Authentication Token Error Interception:- Similarly to the network error interception, this one intercepts the error whenever the token is missing for an API call.
+
+## Example
+
+import 'package:dio/dio.dart';
+import 'package:fa_flutter_api_client/fa_flutter_api_client.dart';
+import 'package:fa_flutter_gt/data/contract/user_repository.dart';
+import 'package:fa_flutter_gt/di/injector.dart';
+
+class MyAuthInterceptor extends AuthInterceptor {
+  @override
+  Future onRequest(
+    RequestOptions options,
+    RequestInterceptorHandler handler,
+  ) async {
+    final token = locator<UserRepository>().authToken;
+    if (token != null) {
+      options.headers['Authorization'] = 'Bearer $token';
+    }
+    return handler.next(options);
+  }
+}
