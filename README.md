@@ -6,7 +6,7 @@ Official FA Flutter API client package.
 
 Add following code in `pubspec.yaml` file in `dependencies`:
 
-```
+``` dart
   fa_flutter_api_client:
     git:
       url: https://github.com/FieldAssist/fa_flutter_api_client.git
@@ -37,7 +37,7 @@ Authentication Token Error Interception:- Similarly to the network error interce
 ## Example
 
 AuthInterceptor
-
+```dart
 import 'package:dio/dio.dart';
 import 'package:fa_flutter_api_client/fa_flutter_api_client.dart';
 import 'package:fa_flutter_gt/data/contract/user_repository.dart';
@@ -56,17 +56,17 @@ class MyAuthInterceptor extends AuthInterceptor {
     return handler.next(options);
   }
 }
-
+```
 ErrorInterceptor
-
+```dart
 import 'package:fa_flutter_api_client/fa_flutter_api_client.dart';
 
 class MyErrorInterceptor extends ErrorInterceptor {
   //TODO(Aashishm178):Handle unAuthorize
 }
-
+```
 NetworkInterceptor
-
+```dart
 import 'package:fa_flutter_api_client/fa_flutter_api_client.dart';
 import 'package:fa_flutter_core/fa_flutter_core.dart';
 import 'package:fa_flutter_gt/core/network/network_info.dart';
@@ -85,11 +85,11 @@ class MyNetworkInterceptor extends NetworkInterceptor {
     return networkInfo!.isConnected;
   }
 }
-
+```
 ## Usage
 
 Make a directory in lib folder called di and add a file name injector.dart
-
+``` dart
 import 'package:example2/interceptor/auth_interceptor.dart';
 import 'package:example2/interceptor/logging_interceptor.dart';
 import 'package:example2/interceptor/network/network_info.dart';
@@ -124,12 +124,13 @@ class Injector {
     });
   }
 }
-
+```
 
 After doing this you can call your API URL using the locator and ApiService
 
 For exmple:-
-
+```
   final response = await locator<ApiService>().get(
         url: 'https://jsonplaceholer.typicode.com/posts',
       );
+```
