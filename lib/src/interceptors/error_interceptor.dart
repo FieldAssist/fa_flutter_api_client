@@ -27,9 +27,17 @@ class ErrorInterceptor extends Interceptor {
         // can complete before navigating to unauthorizedScreen
         Future.delayed(
           const Duration(milliseconds: 300),
-          handleUnauthenticatedUser,
+          () {
+            return handler.reject(
+              UnauthenticatedError(
+                requestOptions: error.requestOptions,
+                response: error.response,
+                type: error.type,
+                error: error.error,
+              ),
+            );
+          },
         );
-        // Returning null as we handled the error
         return null;
       } else if (code == 403) {
         return handler.reject(
@@ -77,9 +85,5 @@ class ErrorInterceptor extends Interceptor {
         error: error.error,
       ),
     );
-  }
-
-  FutureOr handleUnauthenticatedUser() {
-    return throw UnimplementedError();
   }
 }
