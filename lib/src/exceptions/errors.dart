@@ -53,7 +53,7 @@ class UnauthorizedError extends DioError {
 
   @override
   String toString() {
-    return 'Unauthorized, Please try again';
+    return response?.data ?? 'Unauthorized, Please try again';
   }
 }
 
@@ -72,7 +72,7 @@ class UnauthenticatedError extends DioError {
 
   @override
   String toString() {
-    return 'Unauthenticated, Please try again';
+    return response?.data ?? 'Unauthenticated, Please try again';
   }
 }
 
