@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:fa_flutter_core/fa_flutter_core.dart';
 
 class ClientError extends DioError {
   ClientError({
@@ -53,7 +54,9 @@ class UnauthorizedError extends DioError {
 
   @override
   String toString() {
-    return response?.data ?? 'Unauthorized, Please try again';
+    return checkIfNotEmpty(response?.data)
+        ? response?.data
+        : 'Unauthorized, Please try again';
   }
 }
 
@@ -72,7 +75,9 @@ class UnauthenticatedError extends DioError {
 
   @override
   String toString() {
-    return response?.data ?? 'Unauthenticated, Please try again';
+    return checkIfNotEmpty(response?.data)
+        ? response?.data
+        : 'Unauthenticated, Please try again';
   }
 }
 
