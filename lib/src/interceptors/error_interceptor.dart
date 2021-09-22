@@ -4,7 +4,7 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:fa_flutter_api_client/fa_flutter_api_client.dart';
 
-class ErrorInterceptor extends Interceptor {
+abstract class ErrorInterceptor extends Interceptor {
   @override
   Future<void> onError(
     DioError error,
@@ -28,6 +28,7 @@ class ErrorInterceptor extends Interceptor {
         Future.delayed(
           const Duration(milliseconds: 300),
           () {
+            handleUnauthenticatedUser();
             return handler.reject(
               UnauthenticatedError(
                 requestOptions: error.requestOptions,
@@ -86,4 +87,6 @@ class ErrorInterceptor extends Interceptor {
       ),
     );
   }
+
+  FutureOr handleUnauthenticatedUser();
 }
