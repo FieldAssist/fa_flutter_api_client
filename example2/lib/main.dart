@@ -1,6 +1,6 @@
-import 'package:example2/di/injector.dart';
 import 'package:flutter/material.dart';
 
+import 'di/injector.dart';
 import 'test_api_page.dart';
 
 void main() async {

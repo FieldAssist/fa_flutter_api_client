@@ -21,7 +21,7 @@ class Injector {
     final interceptors = [
       MyNetworkInterceptor(networkInfo: locator()),
       MyAuthInterceptor(),
-      ErrorInterceptor(),
+      // ErrorInterceptor(),
       MyLoggingInterceptor(),
     ];
     locator.registerLazySingleton<ApiService>(() {

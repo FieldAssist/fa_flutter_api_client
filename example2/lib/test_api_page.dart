@@ -1,7 +1,7 @@
-import 'package:example2/di/injector.dart';
 import 'package:fa_flutter_api_client/fa_flutter_api_client.dart';
 import 'package:flutter/material.dart';
 
+import 'di/injector.dart';
 import 'interceptor/logging_interceptor.dart';
 
 class TestApiPage extends StatefulWidget {
