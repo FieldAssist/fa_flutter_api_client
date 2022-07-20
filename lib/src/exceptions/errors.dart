@@ -15,6 +15,9 @@ class ClientError extends DioError {
         );
 
   @override
+  String get message => response?.data ?? toString();
+
+  @override
   String toString() {
     return 'Client Error: ${response!.statusCode} '
         '${response!.data ?? response!.statusMessage}';
