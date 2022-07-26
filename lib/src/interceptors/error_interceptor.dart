@@ -24,10 +24,12 @@ abstract class ErrorInterceptor extends Interceptor {
     if (error.type == DioErrorType.response) {
       final code = error.response!.statusCode;
       if (code == 401) {
+        // IF headers contains key [isAuthRequired]
+        // then not clearing auth data when 401 occurs
+        final isLoginApi = error.requestOptions.headers
+            .containsKey(Constants.isAuthRequiredAPIKey);
         // Delaying for 300ms so that other futures
         // can complete before navigating to unauthorizedScreen
-        final isLoginApi =
-            error.requestOptions.headers.containsKey(Constants.isAuthRequiredAPIKey);
         Future.delayed(
           const Duration(milliseconds: 300),
           () {
