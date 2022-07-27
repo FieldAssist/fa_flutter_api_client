@@ -3,17 +3,31 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 
+import '../api_options/api_options.dart';
+
 abstract class ApiService {
   Future<Response<T>> get<T>({
     String? endpoint,
     String? url,
+    ApiOptions? options,
   });
 
-  Future<Response<T>> post<T>({String? endpoint, String? body});
+  Future<Response<T>> post<T>({
+    String? endpoint,
+    String? body,
+    ApiOptions? options,
+  });
 
-  Future<Response<T>> put<T>({String? endpoint, String? body});
+  Future<Response<T>> put<T>({
+    String? endpoint,
+    String? body,
+    ApiOptions? options,
+  });
 
-  Future<Response<T>> delete<T>({String? endpoint});
+  Future<Response<T>> delete<T>({
+    String? endpoint,
+    ApiOptions? options,
+  });
 
   Future<Response<T>> postFile<T>(
       {File? file, ProgressCallback? onSendProgress});
@@ -27,4 +41,7 @@ abstract class ApiService {
   Dio? getDioFile();
 
   Dio? getApiClient();
+
+  /// get key for disabling auth for some requests.
+  String getIsAuthRequiredKey();
 }

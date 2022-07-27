@@ -7,3 +7,4 @@ export 'src/interceptors/auth_interceptor.dart';
 export 'src/interceptors/error_interceptor.dart';
 export 'src/interceptors/logging_interceptor.dart';
 export 'src/interceptors/network_interceptor.dart';
+export 'src/api_options/api_options.dart';

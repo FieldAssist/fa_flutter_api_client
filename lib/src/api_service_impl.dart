@@ -1,6 +1,8 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:fa_flutter_api_client/src/api_options/api_options.dart';
+import 'package:fa_flutter_api_client/src/utils/constants.dart';
 import 'package:fa_flutter_core/fa_flutter_core.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:path/path.dart';
@@ -38,23 +40,57 @@ class ApiServiceImpl implements ApiService {
   Future<Response<T>> get<T>({
     String? endpoint,
     String? url,
+    ApiOptions? options,
   }) async {
-    return _dio!.get<T>(checkIfNotEmpty(url) ? '$url' : '$baseUrl$endpoint');
+    return _dio!.get<T>(checkIfNotEmpty(url) ? '$url' : '$baseUrl$endpoint',
+        options: Options(
+          headers: options?.headers,
+          receiveTimeout: options?.receiveTimeout,
+          sendTimeout: options?.sendTimeout,
+        ));
   }
 
   @override
-  Future<Response<T>> post<T>({String? endpoint, String? body}) async {
-    return _dio!.post<T>('$baseUrl$endpoint', data: body);
+  Future<Response<T>> post<T>({
+    String? endpoint,
+    String? body,
+    ApiOptions? options,
+  }) async {
+    return _dio!.post<T>('$baseUrl$endpoint',
+        data: body,
+        options: Options(
+          headers: options?.headers,
+          receiveTimeout: options?.receiveTimeout,
+          sendTimeout: options?.sendTimeout,
+        ));
   }
 
   @override
-  Future<Response<T>> delete<T>({String? endpoint}) async {
-    return _dio!.delete<T>('$baseUrl$endpoint');
+  Future<Response<T>> delete<T>({
+    String? endpoint,
+    ApiOptions? options,
+  }) async {
+    return _dio!.delete<T>('$baseUrl$endpoint',
+        options: Options(
+          headers: options?.headers,
+          receiveTimeout: options?.receiveTimeout,
+          sendTimeout: options?.sendTimeout,
+        ));
   }
 
   @override
-  Future<Response<T>> put<T>({String? endpoint, String? body}) async {
-    return _dio!.put<T>('$baseUrl$endpoint', data: body);
+  Future<Response<T>> put<T>({
+    String? endpoint,
+    String? body,
+    ApiOptions? options,
+  }) async {
+    return _dio!.put<T>('$baseUrl$endpoint',
+        data: body,
+        options: Options(
+          headers: options?.headers,
+          receiveTimeout: options?.receiveTimeout,
+          sendTimeout: options?.sendTimeout,
+        ));
   }
 
   @override
@@ -108,4 +144,7 @@ class ApiServiceImpl implements ApiService {
   Dio? getApiClient() {
     return _dio;
   }
+
+  @override
+  String getIsAuthRequiredKey() => Constants.isAuthRequiredAPIKey;
 }

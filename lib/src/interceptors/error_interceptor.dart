@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:fa_flutter_api_client/fa_flutter_api_client.dart';
+import 'package:fa_flutter_api_client/src/utils/constants.dart';
 
 abstract class ErrorInterceptor extends Interceptor {
   @override
@@ -23,12 +24,18 @@ abstract class ErrorInterceptor extends Interceptor {
     if (error.type == DioErrorType.response) {
       final code = error.response!.statusCode;
       if (code == 401) {
+        // IF headers contains key [isAuthRequired]
+        // then not clearing auth data when 401 occurs
+        final isLoginApi = error.requestOptions.headers
+            .containsKey(Constants.isAuthRequiredAPIKey);
         // Delaying for 300ms so that other futures
         // can complete before navigating to unauthorizedScreen
         Future.delayed(
           const Duration(milliseconds: 300),
           () {
-            handleUnauthenticatedUser();
+            if (!isLoginApi) {
+              handleUnauthenticatedUser();
+            }
             return handler.reject(
               UnauthenticatedError(
                 requestOptions: error.requestOptions,
