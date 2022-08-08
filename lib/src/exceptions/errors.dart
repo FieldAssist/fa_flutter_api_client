@@ -31,6 +31,7 @@ class ServerError extends DioError {
     response,
     type = DioErrorType.other,
     error,
+    this.showStackTrace = false,
   }) : super(
           requestOptions: requestOptions,
           response: response,
@@ -38,9 +39,12 @@ class ServerError extends DioError {
           error: error,
         );
 
+  /// showStackTrace true means DEV flavor
+  final bool showStackTrace;
+
   @override
   String toString() {
-    if (!kDebugMode) {
+    if (!showStackTrace) {
       return 'Server Error: ${response!.statusCode} '
           'Something Went Wrong!';
     }
@@ -97,6 +101,7 @@ class UnknownApiError extends DioError {
     response,
     type = DioErrorType.other,
     error,
+    this.showStackTrace = false,
   }) : super(
           requestOptions: requestOptions,
           response: response,
@@ -104,9 +109,12 @@ class UnknownApiError extends DioError {
           error: error,
         );
 
+  /// showStackTrace true means DEV flavor
+  final bool showStackTrace;
+
   @override
   String toString() {
-    if (!kDebugMode) {
+    if (!showStackTrace) {
       return 'Oops! Something went wrong.';
     }
     return 'Oops! Something went wrong.\n\n${super.toString()}';
