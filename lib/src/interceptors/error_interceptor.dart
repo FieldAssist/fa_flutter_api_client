@@ -6,6 +6,11 @@ import 'package:fa_flutter_api_client/fa_flutter_api_client.dart';
 import 'package:fa_flutter_api_client/src/utils/constants.dart';
 
 abstract class ErrorInterceptor extends Interceptor {
+  ErrorInterceptor({
+    this.showStackTrace = false,
+  });
+
+  final bool showStackTrace;
   @override
   Future<void> onError(
     DioError error,
@@ -72,6 +77,7 @@ abstract class ErrorInterceptor extends Interceptor {
             response: error.response,
             type: error.type,
             error: error.error,
+            showStackTrace: showStackTrace,
           ),
         );
       } else if (error.error is SocketException) {
@@ -84,6 +90,15 @@ abstract class ErrorInterceptor extends Interceptor {
           ),
         );
       }
+    } else if (error.type == DioErrorType.connectTimeout) {
+      return handler.reject(
+        UnstableInternetError(
+          requestOptions: error.requestOptions,
+          response: error.response,
+          type: error.type,
+          error: error.error,
+        ),
+      );
     }
     return handler.reject(
       UnknownApiError(
@@ -91,6 +106,7 @@ abstract class ErrorInterceptor extends Interceptor {
         response: error.response,
         type: error.type,
         error: error.error,
+        showStackTrace: showStackTrace,
       ),
     );
   }

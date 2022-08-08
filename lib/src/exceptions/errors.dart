@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:fa_flutter_core/fa_flutter_core.dart';
+import 'package:flutter/foundation.dart';
 
 class ClientError extends DioError {
   ClientError({
@@ -30,6 +31,7 @@ class ServerError extends DioError {
     response,
     type = DioErrorType.other,
     error,
+    this.showStackTrace = false,
   }) : super(
           requestOptions: requestOptions,
           response: response,
@@ -37,9 +39,18 @@ class ServerError extends DioError {
           error: error,
         );
 
+  /// showStackTrace true means DEV flavor
+  final bool showStackTrace;
+
   @override
-  String toString() => 'Server Error: ${response!.statusCode} '
-      '${response!.data ?? response!.statusMessage}';
+  String toString() {
+    if (!showStackTrace) {
+      return 'Server Error: ${response!.statusCode} '
+          'Something Went Wrong!';
+    }
+    return 'Server Error: ${response!.statusCode} '
+        '${response!.data ?? response!.statusMessage}';
+  }
 }
 
 class UnauthorizedError extends DioError {
@@ -90,6 +101,7 @@ class UnknownApiError extends DioError {
     response,
     type = DioErrorType.other,
     error,
+    this.showStackTrace = false,
   }) : super(
           requestOptions: requestOptions,
           response: response,
@@ -97,8 +109,14 @@ class UnknownApiError extends DioError {
           error: error,
         );
 
+  /// showStackTrace true means DEV flavor
+  final bool showStackTrace;
+
   @override
   String toString() {
+    if (!showStackTrace) {
+      return 'Oops! Something went wrong.';
+    }
     return 'Oops! Something went wrong.\n\n${super.toString()}';
   }
 }
