@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:fa_flutter_core/fa_flutter_core.dart';
+import 'package:flutter/foundation.dart';
 
 class ClientError extends DioError {
   ClientError({
@@ -38,8 +39,14 @@ class ServerError extends DioError {
         );
 
   @override
-  String toString() => 'Server Error: ${response!.statusCode} '
-      '${response!.data ?? response!.statusMessage}';
+  String toString() {
+    if (!kDebugMode) {
+      return 'Server Error: ${response!.statusCode} '
+          'Something Went Wrong!';
+    }
+    return 'Server Error: ${response!.statusCode} '
+        '${response!.data ?? response!.statusMessage}';
+  }
 }
 
 class UnauthorizedError extends DioError {
@@ -99,6 +106,9 @@ class UnknownApiError extends DioError {
 
   @override
   String toString() {
+    if (!kDebugMode) {
+      return 'Oops! Something went wrong.';
+    }
     return 'Oops! Something went wrong.\n\n${super.toString()}';
   }
 }

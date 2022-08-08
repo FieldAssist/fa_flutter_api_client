@@ -84,6 +84,15 @@ abstract class ErrorInterceptor extends Interceptor {
           ),
         );
       }
+    } else if (error.type == DioErrorType.connectTimeout) {
+      return handler.reject(
+        UnstableInternetError(
+          requestOptions: error.requestOptions,
+          response: error.response,
+          type: error.type,
+          error: error.error,
+        ),
+      );
     }
     return handler.reject(
       UnknownApiError(
