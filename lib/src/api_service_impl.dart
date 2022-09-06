@@ -44,7 +44,7 @@ class ApiServiceImpl implements ApiService {
   }) async {
     return _dio!.get<T>(checkIfNotEmpty(url) ? '$url' : '$baseUrl$endpoint',
         options: Options(
-          headers: options?.headers,
+          headers: _formatHeaders(options),
           receiveTimeout: options?.receiveTimeout,
           sendTimeout: options?.sendTimeout,
         ));
@@ -59,7 +59,7 @@ class ApiServiceImpl implements ApiService {
     return _dio!.post<T>('$baseUrl$endpoint',
         data: body,
         options: Options(
-          headers: options?.headers,
+          headers: _formatHeaders(options),
           receiveTimeout: options?.receiveTimeout,
           sendTimeout: options?.sendTimeout,
         ));
@@ -72,7 +72,7 @@ class ApiServiceImpl implements ApiService {
   }) async {
     return _dio!.delete<T>('$baseUrl$endpoint',
         options: Options(
-          headers: options?.headers,
+          headers: _formatHeaders(options),
           receiveTimeout: options?.receiveTimeout,
           sendTimeout: options?.sendTimeout,
         ));
@@ -87,7 +87,7 @@ class ApiServiceImpl implements ApiService {
     return _dio!.put<T>('$baseUrl$endpoint',
         data: body,
         options: Options(
-          headers: options?.headers,
+          headers: _formatHeaders(options),
           receiveTimeout: options?.receiveTimeout,
           sendTimeout: options?.sendTimeout,
         ));
@@ -147,4 +147,17 @@ class ApiServiceImpl implements ApiService {
 
   @override
   String getIsAuthRequiredKey() => Constants.isAuthRequiredAPIKey;
+
+  Map<String, dynamic> _formatHeaders(ApiOptions? options) {
+    final headers = {
+      ...options?.headers ?? {},
+    };
+    headers['appSpecificHeaders'] = {
+      "forceRefreshCache": options?.refreshCache ?? false,
+      "expirationTime": DateTime.now()
+          .add(options?.expireDuration ?? Duration(days: 1))
+          .toString()
+    };
+    return headers;
+  }
 }

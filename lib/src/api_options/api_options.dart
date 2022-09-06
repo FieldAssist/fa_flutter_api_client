@@ -1,8 +1,10 @@
 class ApiOptions {
   ApiOptions({
-    this.headers,
+    this.headers = const {},
     this.receiveTimeout,
     this.sendTimeout,
+    this.refreshCache,
+    this.expireDuration,
   });
 
   Map<String, dynamic>? headers;
@@ -10,4 +12,8 @@ class ApiOptions {
   int? receiveTimeout;
 
   int? sendTimeout;
+
+  bool? refreshCache;
+
+  Duration? expireDuration;
 }
