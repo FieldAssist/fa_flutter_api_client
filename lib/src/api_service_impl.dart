@@ -152,11 +152,16 @@ class ApiServiceImpl implements ApiService {
     final headers = {
       ...options?.headers ?? {},
     };
+    final _now = DateTime.now();
+    final _midnightTime =
+        DateTime(_now.year, _now.month, _now.day + 1).subtract(
+      Duration(
+        seconds: 1,
+      ),
+    );
     headers['appSpecificHeaders'] = {
       "forceRefreshCache": options?.refreshCache ?? false,
-      "expirationTime": DateTime.now()
-          .add(options?.expireDuration ?? Duration(days: 1))
-          .toString()
+      "expirationTime": _midnightTime.toString()
     };
     return headers;
   }
