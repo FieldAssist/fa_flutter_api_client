@@ -29,8 +29,12 @@ abstract class ApiService {
     ApiOptions? options,
   });
 
-  Future<Response<T>> postFile<T>(
-      {File? file, ProgressCallback? onSendProgress});
+  Future<Response<T>> postFile<T>({
+    String? endpoint,
+    String? keyName,
+    File? file,
+    ProgressCallback? onSendProgress,
+  });
 
   void setBaseUrl(String baseUrl);
 
