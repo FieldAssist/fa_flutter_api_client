@@ -95,9 +95,13 @@ class ApiServiceImpl implements ApiService {
 
   @override
   Future<Response<T>> postFile<T>({
+    String? endpoint,
+    String? keyName,
     File? file,
     ProgressCallback? onSendProgress,
   }) async {
+    endpoint = endpoint ?? getFileUploadUrl();
+    keyName = keyName ?? 'asset';
     if (file == null) {
       throw const MyException("Attached file is null");
     }
@@ -107,14 +111,14 @@ class ApiServiceImpl implements ApiService {
     final type = mimeType.split('/')[0];
     final subType = mimeType.split('/')[1];
     final formData = FormData.fromMap({
-      'asset': await MultipartFile.fromFile(
+      keyName: await MultipartFile.fromFile(
         file.path,
         filename: fileName,
         contentType: MediaType(type, subType),
       ),
     });
     return _dioFile!.post<T>(
-      getFileUploadUrl(),
+      endpoint,
       data: formData,
       onSendProgress: onSendProgress,
     );
