@@ -100,7 +100,7 @@ class ApiServiceImpl implements ApiService {
     File? file,
     ProgressCallback? onSendProgress,
   }) async {
-    endpoint = endpoint ?? getFileUploadUrl();
+    endpoint = endpoint != null ? "$baseUrl$endpoint" : getFileUploadUrl();
     keyName = keyName ?? 'asset';
     if (file == null) {
       throw const MyException("Attached file is null");
