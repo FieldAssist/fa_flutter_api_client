@@ -53,10 +53,11 @@ class ApiServiceImpl implements ApiService {
   @override
   Future<Response<T>> post<T>({
     String? endpoint,
+    String? url,
     String? body,
     ApiOptions? options,
   }) async {
-    return _dio!.post<T>('$baseUrl$endpoint',
+    return _dio!.post<T>(url ?? '$baseUrl$endpoint',
         data: body,
         options: Options(
           headers: _formatHeaders(options),

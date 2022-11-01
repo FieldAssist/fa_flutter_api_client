@@ -13,6 +13,7 @@ abstract class ApiService {
   });
 
   Future<Response<T>> post<T>({
+    String? url,
     String? endpoint,
     String? body,
     ApiOptions? options,
