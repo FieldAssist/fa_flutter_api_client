@@ -1,6 +1,5 @@
 import 'package:dio/dio.dart';
 import 'package:fa_flutter_core/fa_flutter_core.dart';
-import 'package:flutter/foundation.dart';
 
 class ClientError extends DioError {
   ClientError({
