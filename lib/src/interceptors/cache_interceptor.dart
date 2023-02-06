@@ -33,7 +33,8 @@ class ApiCacheInterceptor extends Interceptor {
 //             await sembastHelper.get(sembastHelper.record(_dataStore, id));
 // final appDb = sembastAppDb.
         final _storeRef = StoreRef.main();
-        final keyData = await sembastAppDb.get(_storeRef.record(_apiDataKey));
+        final keyData = await sembastAppDb.get(_storeRef.record(_apiDataKey))
+            as Map<String, dynamic>?;
         if (keyData != null) {
           logger.v("**************  🔥 VALIDATING CACHE 🔥   ***********");
 
