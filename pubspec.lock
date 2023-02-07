@@ -248,7 +248,7 @@ packages:
     description:
       path: "."
       ref: main
-      resolved-ref: "423a0e4a76b59bb643f16c72086b10dbe59e97d7"
+      resolved-ref: "4a90e9b7e46601bdc24b05cab64d3e0aec260c0b"
       url: "https://github.com/FieldAssist/fa_flutter_core.git"
     source: git
     version: "2.0.2"

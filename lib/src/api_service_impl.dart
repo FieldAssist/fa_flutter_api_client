@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:fa_flutter_api_client/src/api_options/api_options.dart';
 import 'package:fa_flutter_api_client/src/utils/constants.dart';
-import 'package:fa_flutter_core/fa_flutter_core.dart';
+import 'package:fa_flutter_core/fa_flutter_core.dart' hide ProgressCallback;
 import 'package:http_parser/http_parser.dart';
 import 'package:path/path.dart';
 
