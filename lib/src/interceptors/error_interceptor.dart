@@ -61,6 +61,15 @@ abstract class ErrorInterceptor extends Interceptor {
             error: error.error,
           ),
         );
+      } else if (code == 412) {
+        return handler.reject(
+          PreconditionFailedError(
+            requestOptions: error.requestOptions,
+            response: error.response,
+            type: error.type,
+            error: error.error,
+          ),
+        );
       } else if (code! >= 400 && code < 500) {
         return handler.reject(
           ClientError(

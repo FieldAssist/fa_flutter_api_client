@@ -73,6 +73,27 @@ class UnauthorizedError extends DioError {
   }
 }
 
+class PreconditionFailedError extends DioError {
+  PreconditionFailedError({
+    required requestOptions,
+    response,
+    type = DioErrorType.other,
+    error,
+  }) : super(
+          requestOptions: requestOptions,
+          response: response,
+          type: type,
+          error: error,
+        );
+
+  @override
+  String toString() {
+    return checkIfNotEmpty(response?.data)
+        ? response?.data
+        : 'Access to the target resource has been denied';
+  }
+}
+
 class UnauthenticatedError extends DioError {
   UnauthenticatedError({
     required requestOptions,
