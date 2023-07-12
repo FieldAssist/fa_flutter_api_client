@@ -29,7 +29,7 @@ abstract class ErrorInterceptor extends Interceptor {
     if (error.type == DioExceptionType.badResponse) {
       final code = error.response!.statusCode;
       if (code == 401) {
-        final unauthenticatedError = error as UnauthenticatedError;
+        final unauthenticatedError = UnauthenticatedError.fromDioError(error);
         // IF headers contains key [isAuthRequired]
         // then not clearing auth data when 401 occurs
         final isLoginApi = checkIsLoginApi(unauthenticatedError);
