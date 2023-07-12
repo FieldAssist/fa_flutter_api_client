@@ -31,15 +31,14 @@ abstract class ErrorInterceptor extends Interceptor {
       if (code == 401) {
         // IF headers contains key [isAuthRequired]
         // then not clearing auth data when 401 occurs
-        final isLoginApi = error.requestOptions.headers
-            .containsKey(Constants.isAuthRequiredAPIKey);
+        final isLoginApi = checkIsLoginApi(error);
         // Delaying for 300ms so that other futures
         // can complete before navigating to unauthorizedScreen
         Future.delayed(
           const Duration(milliseconds: 300),
           () {
             if (!isLoginApi) {
-              handleUnauthenticatedUser();
+              handleUnauthenticatedUser(error);
             }
             return handler.reject(
               UnauthenticatedError(
@@ -120,5 +119,12 @@ abstract class ErrorInterceptor extends Interceptor {
     );
   }
 
-  FutureOr handleUnauthenticatedUser();
+  bool checkIsLoginApi(DioError error) {
+    return isLoginApi(error.requestOptions) ||
+        error.requestOptions.headers
+            .containsKey(Constants.isAuthRequiredAPIKey);
+  }
+
+  FutureOr handleUnauthenticatedUser(DioError error);
+  bool isLoginApi(RequestOptions requestOptions);
 }
