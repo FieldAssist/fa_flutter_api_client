@@ -113,6 +113,14 @@ class UnauthenticatedError extends DioException {
         ? response?.data
         : 'Unauthenticated, Please try again';
   }
+
+  UnauthenticatedError.fromDioError(DioError error)
+      : super(
+          requestOptions: error.requestOptions,
+          response: error.response,
+          type: error.type,
+          error: error,
+        );
 }
 
 class UnknownApiError extends DioException {
