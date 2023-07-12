@@ -29,16 +29,17 @@ abstract class ErrorInterceptor extends Interceptor {
     if (error.type == DioExceptionType.badResponse) {
       final code = error.response!.statusCode;
       if (code == 401) {
+        final unauthenticatedError = error as UnauthenticatedError;
         // IF headers contains key [isAuthRequired]
         // then not clearing auth data when 401 occurs
-        final isLoginApi = checkIsLoginApi(error);
+        final isLoginApi = checkIsLoginApi(unauthenticatedError);
         // Delaying for 300ms so that other futures
         // can complete before navigating to unauthorizedScreen
         Future.delayed(
           const Duration(milliseconds: 300),
           () {
             if (!isLoginApi) {
-              handleUnauthenticatedUser(error);
+              handleUnauthenticatedUser(unauthenticatedError);
             }
             return handler.reject(
               UnauthenticatedError(
@@ -119,12 +120,12 @@ abstract class ErrorInterceptor extends Interceptor {
     );
   }
 
-  bool checkIsLoginApi(DioError error) {
-    return isLoginApi(error.requestOptions) ||
+  bool checkIsLoginApi(UnauthenticatedError error) {
+    return isLoginApi(error.requestOptions.path) ||
         error.requestOptions.headers
             .containsKey(Constants.isAuthRequiredAPIKey);
   }
 
-  FutureOr handleUnauthenticatedUser(DioError error);
-  bool isLoginApi(RequestOptions requestOptions);
+  FutureOr handleUnauthenticatedUser(UnauthenticatedError error);
+  bool isLoginApi(String path);
 }
