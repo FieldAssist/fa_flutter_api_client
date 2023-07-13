@@ -9,3 +9,4 @@ export 'src/interceptors/logging_interceptor.dart';
 export 'src/interceptors/network_interceptor.dart';
 export 'src/api_options/api_options.dart';
 export 'src/interceptors/cache_interceptor.dart';
+export 'src/interceptors/cancel_token_interceptor.dart';
