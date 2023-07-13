@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
 
-class CancelTokenInterceptor extends Interceptor {
+abstract class CancelTokenInterceptor extends Interceptor {
   CancelTokenInterceptor() : appCancelToken = AppCancelToken();
 
   final AppCancelToken appCancelToken;
@@ -10,9 +10,14 @@ class CancelTokenInterceptor extends Interceptor {
     RequestOptions options,
     RequestInterceptorHandler handler,
   ) async {
-    options.cancelToken = appCancelToken.getCancelToken();
+    if (shouldAddCancelToken(options.path)) {
+      final cancelToken = appCancelToken.getCancelToken();
+      options.cancelToken = cancelToken;
+    }
     handler.next(options);
   }
+
+  bool shouldAddCancelToken(String path);
 }
 
 class AppCancelToken {
