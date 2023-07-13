@@ -186,3 +186,27 @@ class UnstableInternetError extends DioException {
     return 'Poor internet connection';
   }
 }
+
+class RequestCancelError extends DioError {
+  RequestCancelError({
+    required requestOptions,
+    response,
+    type = DioErrorType.other,
+    error,
+  }) : super(
+          requestOptions: requestOptions,
+          response: response,
+          type: type,
+          error: error,
+        );
+
+  RequestCancelError.fromDioError(DioError error)
+      : super(
+          type: error.type,
+          error: error.error,
+          requestOptions: error.requestOptions,
+        );
+
+  @override
+  String toString() => message;
+}

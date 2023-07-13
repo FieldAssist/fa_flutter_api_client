@@ -109,6 +109,11 @@ abstract class ErrorInterceptor extends Interceptor {
         ),
       );
     }
+
+    if (error.type == DioErrorType.cancel) {
+      return handler.reject(RequestCancelError.fromDioError(error));
+    }
+
     return handler.reject(
       UnknownApiError(
         requestOptions: error.requestOptions,
