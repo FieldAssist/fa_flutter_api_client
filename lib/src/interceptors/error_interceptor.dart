@@ -121,15 +121,10 @@ abstract class ErrorInterceptor extends Interceptor {
   }
 
   bool checkIsLoginApi(UnauthenticatedError error) {
-    return isLoginApi(error.requestOptions.path) ||
-        error.requestOptions.headers
-            .containsKey(Constants.isAuthRequiredAPIKey);
+    return error.requestOptions.headers
+        .containsKey(Constants.isAuthRequiredAPIKey);
   }
 
-  /// It will be called when `401` occurs and either [isLoginApi] returns `false`
-  /// or [isAuthRequiredAPIKey] is not present in headers
+  /// It will be called when `401` occurs and [isAuthRequiredAPIKey] is not present in headers
   FutureOr handleUnauthenticatedUser(UnauthenticatedError error);
-
-  /// When returned `true` it will not call [handleUnauthenticatedUser] method for that request
-  bool isLoginApi(String path);
 }
