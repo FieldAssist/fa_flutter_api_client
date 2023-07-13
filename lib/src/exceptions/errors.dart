@@ -208,5 +208,5 @@ class RequestCancelError extends DioError {
         );
 
   @override
-  String toString() => message;
+  String toString() => error;
 }
