@@ -193,6 +193,7 @@ class RequestCancelError extends DioError {
     response,
     type = DioErrorType.other,
     error,
+    this.showStackTrace = false,
   }) : super(
           requestOptions: requestOptions,
           response: response,
@@ -200,13 +201,24 @@ class RequestCancelError extends DioError {
           error: error,
         );
 
-  RequestCancelError.fromDioError(DioError error)
-      : super(
+  RequestCancelError.fromDioError(DioError error, bool showStackTrace)
+      : showStackTrace = showStackTrace,
+        super(
           type: error.type,
           error: error.error,
           requestOptions: error.requestOptions,
+          response: error.response,
         );
 
+  /// showStackTrace true means DEV flavor
+  final bool showStackTrace;
+
   @override
-  String toString() => error;
+  String toString() {
+    if (!showStackTrace) {
+      return "Error: ${response?.statusCode ?? ""} Something Went Wrong!";
+    }
+
+    return "Token Cancelled Error: ${response?.statusCode ?? ""} ${error ?? response?.statusMessage ?? ""}";
+  }
 }
