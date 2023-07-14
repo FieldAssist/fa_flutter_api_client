@@ -166,7 +166,7 @@ class ApiServiceImpl implements ApiService {
     );
     headers['appSpecificHeaders'] = {
       "forceRefreshCache": options?.refreshCache ?? false,
-      "expirationTime": _midnightTime.toString()
+      "expirationTime": options?.expireTime ?? _midnightTime.toString()
     };
     return headers;
   }

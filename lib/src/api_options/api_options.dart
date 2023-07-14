@@ -5,6 +5,7 @@ class ApiOptions {
     this.sendTimeout,
     this.refreshCache,
     this.expireDuration,
+    this.expireTime,
   });
 
   Map<String, dynamic>? headers;
@@ -15,5 +16,8 @@ class ApiOptions {
 
   bool? refreshCache;
 
+  @deprecated
   Duration? expireDuration;
+
+  DateTime? expireTime;
 }
