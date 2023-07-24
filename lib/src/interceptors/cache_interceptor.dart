@@ -1,21 +1,42 @@
 // ignore_for_file: cascade_invocations
 
 import 'dart:convert';
-import 'dart:developer';
 
 import 'package:dio/dio.dart';
 import 'package:fa_flutter_core/fa_flutter_core.dart';
 
-class ApiCacheInterceptor extends Interceptor {
+abstract class ApiCacheInterceptor extends Interceptor {
   ApiCacheInterceptor({required this.sembastAppDb});
 
   final SembastHelperImpl sembastAppDb;
   final AppLog logger = AppLogImpl();
+  final cache_response_status = 1001;
   @override
   Future onRequest(
     RequestOptions options,
     RequestInterceptorHandler handler,
   ) async {
+    // try {
+    final response = await _cacheResponse(options);
+
+    if (response != null) {
+      logger.v(
+        '''************** 🚀  CACHE INTERCEPTOR - Returning cached data 🚀 *********''',
+      );
+
+      return handler.resolve(response, true);
+    }
+
+    logger.v(
+      '''************** ⏳ CACHE INTERCEPTOR - FETCHING NETWORK DATA ⏳ *********''',
+    );
+    // } catch (e) {
+    // logger.d('********  ❌ CACHE INTERCEPTOR - ERROR  ❌ $e ********');
+    // }
+    return handler.next(options);
+  }
+
+  Future<Response?> _cacheResponse(RequestOptions options) async {
     final _now = DateTime.now();
     final _midnightTime =
         DateTime(_now.year, _now.month, _now.day + 1).subtract(
@@ -23,64 +44,48 @@ class ApiCacheInterceptor extends Interceptor {
         seconds: 1,
       ),
     );
-    try {
-      logger.v("**************  CACHE INTERCEPTOR -> REQUEST *********");
+    final _apiDataKey = _formStringFromRequestHeaders(options);
+    final _storeRef = StoreRef.main();
+    final keyData = await sembastAppDb.get(_storeRef.record(_apiDataKey))
+        as Map<String, dynamic>?;
 
-      if (!(options.headers['appSpecificHeaders']?['forceRefreshCache'] ??
-          false)) {
-        final _apiDataKey = _formStringFromRequestHeaders(options);
-//         final _data =
-//             await sembastHelper.get(sembastHelper.record(_dataStore, id));
-// final appDb = sembastAppDb.
-        final _storeRef = StoreRef.main();
-        final keyData = await sembastAppDb.get(_storeRef.record(_apiDataKey))
-            as Map<String, dynamic>?;
-        if (keyData != null) {
-          logger.v("**************  🔥 VALIDATING CACHE 🔥   ***********");
-
-          /// If cache is valid
-          if (isCacheValid(
-            DateTime.parse(
-              keyData['appSpecificHeaders']?['expirationTime'] ?? _midnightTime,
-            ),
-            DateTime.parse(
-              keyData['appSpecificHeaders']?['cachedTime'],
-            ),
-          )) {
-            logger.v(
-              '''************** 🚀  CACHE INTERCEPTOR -> Returning cached data 🚀 *********''',
-            );
-
-            return handler.resolve(
-              Response(
-                requestOptions: options,
-                data: jsonDecode(keyData['appSpecificHeaders']?['data'] ?? ''),
-                statusCode: 200,
-                redirects: [],
-                extra: {},
-                isRedirect: false,
-                statusMessage: 'Cached Data',
-              ),
-              true,
-            );
-          }
-        } else {
-          /// If cache has expired
-          logger.v(
-            '''************** ⏳  CACHE INTERCEPTOR - DATA EXPIRED, RE-FETCHING ⏳ *********''',
-          );
-
-          await sembastAppDb.delete(_storeRef.record(_apiDataKey));
-          // await sembastAppDb.   .removeApiCache(_apiDataKey);
-        }
-      }
-      logger.v(
-        '''************** ⏳ CACHE INTERCEPTOR - FETCHING NETWORK DATA ⏳ *********''',
+    if (keyData != null) {
+      final isValid = isCacheValid(
+        DateTime.parse(
+          keyData['appSpecificHeaders']?['expirationTime'] ?? _midnightTime,
+          DateTime.parse(
+            keyData['appSpecificHeaders']?['cachedTime'],
+          ),
+        ),
       );
-      return handler.next(options);
-    } catch (e) {
-      logger.d('~~~~Error from cache interceptor: $e');
+      if (isValid) {
+        logger.v("**************  🔥 VALIDATING CACHE 🔥   ***********");
+        return Response(
+          requestOptions: options,
+          data: jsonDecode(keyData['appSpecificHeaders']?['data'] ?? ''),
+          statusCode: cache_response_status,
+          redirects: [],
+          extra: {},
+          isRedirect: false,
+          statusMessage: 'Cached Data',
+        );
+      } else {
+        await sembastAppDb.delete(_storeRef.record(_apiDataKey));
+      }
     }
+
+    return null;
+  }
+
+  @override
+  Future<void> onError(DioError err, ErrorInterceptorHandler handler) async {
+    final res = await _cacheResponse(err.requestOptions);
+    cacheInterceptorErrorHandler(err);
+    if (res != null) {
+      return handler.resolve(res);
+    }
+
+    return handler.next(err);
   }
 
   @override
@@ -88,8 +93,13 @@ class ApiCacheInterceptor extends Interceptor {
     Response response,
     ResponseInterceptorHandler handler,
   ) async {
+    await saveResponse(response);
+    return handler.next(response);
+  }
+
+  Future<void> saveResponse(Response response) async {
     final _apiDataKey = _formStringFromRequestHeaders(response.requestOptions);
-    logger.v("**************  CACHE INTERCEPTOR -> RESPONSE *********");
+
     final _now = DateTime.now();
     final _midnightTime =
         DateTime(_now.year, _now.month, _now.day + 1).subtract(
@@ -100,6 +110,7 @@ class ApiCacheInterceptor extends Interceptor {
     final status = response.statusCode ?? 0;
     final cacheResponse =
         response.requestOptions.headers['cacheResponse'] ?? true;
+
     if ((status == 200 || status == 201 || status == 202) && cacheResponse) {
       log(response.requestOptions.headers.toString());
       //  await sembastHelper.put(sembastHelper.record(_dataStore, id), response);
@@ -114,7 +125,8 @@ class ApiCacheInterceptor extends Interceptor {
                     _midnightTime)
                 .toString(),
             "cachedTime": DateTime.now().toString(),
-            "data": jsonEncode(response.data)
+            "data": jsonEncode(response.data),
+            "status": cache_response_status
           }
         },
       );
@@ -123,7 +135,6 @@ class ApiCacheInterceptor extends Interceptor {
         '''************** ✅  CACHE INTERCEPTOR -> CACHED ✅ *********''',
       );
     }
-    return handler.next(response);
   }
 
   String _formStringFromRequestHeaders(
@@ -143,4 +154,6 @@ class ApiCacheInterceptor extends Interceptor {
 
     return false;
   }
+
+  void cacheInterceptorErrorHandler(DioError err);
 }
