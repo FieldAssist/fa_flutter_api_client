@@ -22,7 +22,7 @@ class ApiServiceImpl implements ApiService {
 
     _dioFile = Dio()
       ..options.connectTimeout = 60000
-      ..options.receiveTimeout = 300000;
+      ..options.receiveTimeout = 90000;
 
     if (interceptors != null && interceptors!.isNotEmpty) {
       _dioFile!.interceptors.addAll(interceptors!);
