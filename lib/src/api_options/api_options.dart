@@ -4,8 +4,7 @@ class ApiOptions {
     this.receiveTimeout,
     this.sendTimeout,
     this.refreshCache,
-    this.expireDuration,
-    this.expireTime,
+    this.expireDuration = const Duration(days: 1),
   });
 
   Map<String, dynamic>? headers;
@@ -16,8 +15,5 @@ class ApiOptions {
 
   bool? refreshCache;
 
-  @deprecated
   Duration? expireDuration;
-
-  DateTime? expireTime;
 }

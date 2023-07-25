@@ -169,8 +169,16 @@ class ApiServiceImpl implements ApiService {
     );
     headers['appSpecificHeaders'] = {
       "forceRefreshCache": options?.refreshCache ?? false,
-      "expirationTime": options?.expireTime ?? _midnightTime.toString()
+      "expirationTime": options?.expireDuration != null
+          ? _now.add(options!.expireDuration!).toString()
+          : _midnightTime.toString(),
+      "expireDuration": options?.expireDuration
     };
     return headers;
+  }
+
+  @override
+  Future<String> requestTranformer(RequestOptions options) {
+    return _dio!.transformer.transformRequest(options);
   }
 }
