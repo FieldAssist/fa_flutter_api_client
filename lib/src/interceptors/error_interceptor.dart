@@ -35,9 +35,11 @@ abstract class ErrorInterceptor extends Interceptor {
         final isLoginApi = checkIsLoginApi(unauthenticatedError);
         // Delaying for 300ms so that other futures
         // can complete before navigating to unauthorizedScreen
-        Future.delayed(
-          const Duration(milliseconds: 300),
-          () {
+        // Future.delayed(
+        //   const Duration(milliseconds: 300),
+        //   () {
+        //   },
+        // );
             if (!isLoginApi) {
               handleUnauthenticatedUser(unauthenticatedError);
             }
@@ -49,9 +51,7 @@ abstract class ErrorInterceptor extends Interceptor {
                 error: error.error,
               ),
             );
-          },
-        );
-        return null;
+        // return null;
       } else if (code == 403) {
         return handler.reject(
           UnauthorizedError(
