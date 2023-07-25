@@ -14,8 +14,12 @@ abstract class ApiCacheInterceptor extends Interceptor {
     RequestOptions options,
     RequestInterceptorHandler handler,
   ) async {
-    // try {
-    final response = await _cacheResponse(options);
+    if ((options.headers['appSpecificHeaders']?['forceRefreshCache'] ??
+        false)) {
+      return handler.next(options);
+    }
+
+    final response = await _getCacheResponse(options);
 
     if (response != null) {
       logger.v(
@@ -28,13 +32,11 @@ abstract class ApiCacheInterceptor extends Interceptor {
     logger.v(
       '''************** ⏳ CACHE INTERCEPTOR - FETCHING NETWORK DATA ⏳ *********''',
     );
-    // } catch (e) {
-    // logger.d('********  ❌ CACHE INTERCEPTOR - ERROR  ❌ $e ********');
-    // }
+
     return handler.next(options);
   }
 
-  Future<Response?> _cacheResponse(RequestOptions options) async {
+  Future<Response?> _getCacheResponse(RequestOptions options) async {
     final _now = DateTime.now();
     final _midnightTime =
         DateTime(_now.year, _now.month, _now.day + 1).subtract(
@@ -42,6 +44,7 @@ abstract class ApiCacheInterceptor extends Interceptor {
         seconds: 1,
       ),
     );
+
     final _apiDataKey = _formStringFromRequestHeaders(options);
     final _storeRef = StoreRef.main();
     final keyData = await sembastAppDb.get(_storeRef.record(_apiDataKey))
@@ -53,30 +56,33 @@ abstract class ApiCacheInterceptor extends Interceptor {
           keyData['appSpecificHeaders']?['expirationTime'] ?? _midnightTime,
         ),
       );
-      if (isValid) {
-        logger.v("**************  🔥 VALIDATING CACHE 🔥   ***********");
-        return Response(
-          requestOptions: options,
-          data: jsonDecode(keyData['appSpecificHeaders']?['data'] ?? ''),
-          statusCode: cache_response_status,
-          redirects: [],
-          extra: {},
-          isRedirect: false,
-          statusMessage: 'Cached Data',
-        );
-      } else {
-        await sembastAppDb.delete(_storeRef.record(_apiDataKey));
+      if (!isValid) {
+        refreshCache(options);
       }
+
+      logger.v("**************  🔥 VALIDATING CACHE 🔥   ***********");
+      return Response(
+        requestOptions: options,
+        data: jsonDecode(keyData['appSpecificHeaders']?['data'] ?? ''),
+        statusCode: cache_response_status,
+        redirects: [],
+        extra: {},
+        isRedirect: false,
+        statusMessage: 'Cached Data',
+      );
     }
 
     return null;
   }
 
+  void refreshCache(RequestOptions option);
+
   @override
   Future<void> onError(DioError err, ErrorInterceptorHandler handler) async {
-    final res = await _cacheResponse(err.requestOptions);
-    cacheInterceptorErrorHandler(err);
+    final res = await _getCacheResponse(err.requestOptions);
+
     if (res != null) {
+      cacheInterceptorErrorHandler(err);
       return handler.resolve(res);
     }
 
@@ -89,6 +95,7 @@ abstract class ApiCacheInterceptor extends Interceptor {
     ResponseInterceptorHandler handler,
   ) async {
     await saveResponse(response);
+
     return handler.next(response);
   }
 

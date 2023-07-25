@@ -49,4 +49,6 @@ abstract class ApiService {
 
   /// get key for disabling auth for some requests.
   String getIsAuthRequiredKey();
+
+  Future<String> requestTranformer(RequestOptions options);
 }
