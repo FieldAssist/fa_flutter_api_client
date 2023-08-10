@@ -40,17 +40,17 @@ abstract class ErrorInterceptor extends Interceptor {
         //   () {
         //   },
         // );
-            if (!isLoginApi) {
-              handleUnauthenticatedUser(unauthenticatedError);
-            }
-            return handler.reject(
-              UnauthenticatedError(
-                requestOptions: error.requestOptions,
-                response: error.response,
-                type: error.type,
-                error: error.error,
-              ),
-            );
+        if (!isLoginApi) {
+          await handleUnauthenticatedUser(unauthenticatedError);
+        }
+        return handler.reject(
+          UnauthenticatedError(
+            requestOptions: error.requestOptions,
+            response: error.response,
+            type: error.error,
+            error: error.error,
+          ),
+        );
         // return null;
       } else if (code == 403) {
         return handler.reject(
