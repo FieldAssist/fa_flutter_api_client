@@ -47,7 +47,7 @@ abstract class ErrorInterceptor extends Interceptor {
           UnauthenticatedError(
             requestOptions: error.requestOptions,
             response: error.response,
-            type: error.error,
+            type: error.type,
             error: error.error,
           ),
         );
