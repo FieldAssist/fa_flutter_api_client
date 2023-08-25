@@ -16,7 +16,7 @@ abstract class NetworkInterceptor extends Interceptor {
         NoInternetError(
           requestOptions: options,
           response: Response(requestOptions: options),
-          type: DioErrorType.other,
+          type: DioExceptionType.unknown,
           error: 'No Internet Error',
         ),
       );

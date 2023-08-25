@@ -30,7 +30,7 @@ abstract class LoggingInterceptor extends Interceptor {
 
   @override
   Future<void> onError(
-    DioError err,
+    DioException err,
     ErrorInterceptorHandler handler,
   ) async {
     logPrint('*** Api Error - Start ***:');

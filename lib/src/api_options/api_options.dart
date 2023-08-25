@@ -10,9 +10,9 @@ class ApiOptions {
 
   Map<String, dynamic>? headers;
 
-  int? receiveTimeout;
+  Duration? receiveTimeout;
 
-  int? sendTimeout;
+  Duration? sendTimeout;
 
   bool? refreshCache;
 

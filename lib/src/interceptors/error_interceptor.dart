@@ -13,7 +13,7 @@ abstract class ErrorInterceptor extends Interceptor {
   final bool showStackTrace;
   @override
   Future<void> onError(
-    DioError error,
+    DioException error,
     ErrorInterceptorHandler handler,
   ) async {
     if (error is NoInternetError) {
@@ -26,7 +26,7 @@ abstract class ErrorInterceptor extends Interceptor {
         ),
       );
     }
-    if (error.type == DioErrorType.response) {
+    if (error.type == DioExceptionType.badResponse) {
       final code = error.response!.statusCode;
       if (code == 401) {
         // IF headers contains key [isAuthRequired]
@@ -99,7 +99,7 @@ abstract class ErrorInterceptor extends Interceptor {
           ),
         );
       }
-    } else if (error.type == DioErrorType.connectTimeout) {
+    } else if (error.type == DioExceptionType.connectionTimeout) {
       return handler.reject(
         UnstableInternetError(
           requestOptions: error.requestOptions,

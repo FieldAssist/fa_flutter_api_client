@@ -1,11 +1,11 @@
 import 'package:dio/dio.dart';
 import 'package:fa_flutter_core/fa_flutter_core.dart';
 
-class ClientError extends DioError {
+class ClientError extends DioException {
   ClientError({
     requestOptions,
     response,
-    type = DioErrorType.other,
+    type = DioExceptionType.unknown,
     error,
   }) : super(
           requestOptions: requestOptions,
@@ -24,11 +24,11 @@ class ClientError extends DioError {
   }
 }
 
-class ServerError extends DioError {
+class ServerError extends DioException {
   ServerError({
     required requestOptions,
     response,
-    type = DioErrorType.other,
+    type = DioExceptionType.unknown,
     error,
     this.showStackTrace = false,
   }) : super(
@@ -52,11 +52,11 @@ class ServerError extends DioError {
   }
 }
 
-class UnauthorizedError extends DioError {
+class UnauthorizedError extends DioException {
   UnauthorizedError({
     required requestOptions,
     response,
-    type = DioErrorType.other,
+    type = DioExceptionType.unknown,
     error,
   }) : super(
           requestOptions: requestOptions,
@@ -73,11 +73,11 @@ class UnauthorizedError extends DioError {
   }
 }
 
-class PreconditionFailedError extends DioError {
+class PreconditionFailedError extends DioException {
   PreconditionFailedError({
     required requestOptions,
     response,
-    type = DioErrorType.other,
+    type = DioExceptionType.unknown,
     error,
   }) : super(
           requestOptions: requestOptions,
@@ -94,11 +94,11 @@ class PreconditionFailedError extends DioError {
   }
 }
 
-class UnauthenticatedError extends DioError {
+class UnauthenticatedError extends DioException {
   UnauthenticatedError({
     required requestOptions,
     response,
-    type = DioErrorType.other,
+    type = DioExceptionType.unknown,
     error,
   }) : super(
           requestOptions: requestOptions,
@@ -115,11 +115,11 @@ class UnauthenticatedError extends DioError {
   }
 }
 
-class UnknownApiError extends DioError {
+class UnknownApiError extends DioException {
   UnknownApiError({
     required requestOptions,
     response,
-    type = DioErrorType.other,
+    type = DioExceptionType.unknown,
     error,
     this.showStackTrace = false,
   }) : super(
@@ -141,11 +141,11 @@ class UnknownApiError extends DioError {
   }
 }
 
-class NoInternetError extends DioError {
+class NoInternetError extends DioException {
   NoInternetError({
     required requestOptions,
     response,
-    type = DioErrorType.other,
+    type = DioExceptionType.unknown,
     error,
   }) : super(
           requestOptions: requestOptions,
@@ -160,11 +160,11 @@ class NoInternetError extends DioError {
   }
 }
 
-class UnstableInternetError extends DioError {
+class UnstableInternetError extends DioException {
   UnstableInternetError({
     required requestOptions,
     response,
-    type = DioErrorType.other,
+    type = DioExceptionType.unknown,
     error,
   }) : super(
           requestOptions: requestOptions,
