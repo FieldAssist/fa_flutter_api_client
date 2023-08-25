@@ -114,7 +114,7 @@ class UnauthenticatedError extends DioException {
         : 'Unauthenticated, Please try again';
   }
 
-  UnauthenticatedError.fromDioError(DioError error)
+  UnauthenticatedError.fromDioError(DioException error)
       : super(
           requestOptions: error.requestOptions,
           response: error.response,
@@ -187,11 +187,11 @@ class UnstableInternetError extends DioException {
   }
 }
 
-class RequestCancelError extends DioError {
+class RequestCancelError extends DioException {
   RequestCancelError({
     required requestOptions,
     response,
-    type = DioErrorType.other,
+    type = DioExceptionType.unknown,
     error,
     this.showStackTrace = false,
   }) : super(
@@ -201,7 +201,7 @@ class RequestCancelError extends DioError {
           error: error,
         );
 
-  RequestCancelError.fromDioError(DioError error, bool showStackTrace)
+  RequestCancelError.fromDioError(DioException error, bool showStackTrace)
       : showStackTrace = showStackTrace,
         super(
           type: error.type,

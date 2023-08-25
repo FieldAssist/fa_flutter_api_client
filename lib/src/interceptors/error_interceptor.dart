@@ -110,7 +110,7 @@ abstract class ErrorInterceptor extends Interceptor {
       );
     }
 
-    if (error.type == DioErrorType.cancel) {
+    if (error.type == DioExceptionType.cancel) {
       return handler.reject(
         RequestCancelError.fromDioError(
           error,
