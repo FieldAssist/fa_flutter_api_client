@@ -1,5 +1,3 @@
-// ignore_for_file: cascade_invocations
-
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
