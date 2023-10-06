@@ -147,7 +147,7 @@ abstract class ApiCacheInterceptor extends Interceptor {
   }
 
   bool isCacheValid(DateTime expirationTime) {
-    if (DateTime.now().isBefore(expirationTime)) {
+    if (expirationTime.isSameDate(DateTime.now())) {
       return true;
     }
 
