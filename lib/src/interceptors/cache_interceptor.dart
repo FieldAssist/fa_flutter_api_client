@@ -43,6 +43,9 @@ class ApiCacheInterceptor extends Interceptor {
             DateTime.parse(
               keyData['appSpecificHeaders']?['expirationTime'] ?? _midnightTime,
             ),
+            DateTime.parse(
+              keyData['appSpecificHeaders']?['cachedTime'],
+            ),
           )) {
             logger.v(
               '''************** 🚀  CACHE INTERCEPTOR -> Returning cached data 🚀 *********''',
@@ -132,8 +135,9 @@ class ApiCacheInterceptor extends Interceptor {
     return '$url/$queryParams/$body';
   }
 
-  bool isCacheValid(DateTime expirationTime) {
-    if (DateTime.now().isBefore(expirationTime)) {
+  bool isCacheValid(DateTime expirationTime, DateTime cacheTime) {
+    if (cacheTime.isSameDate(DateTime.now()) &&
+        DateTime.now().isBefore(expirationTime)) {
       return true;
     }
 
