@@ -31,6 +31,12 @@ abstract class ApiService {
     ApiOptions? options,
   });
 
+  Future<Response<T>> patch<T>({
+    String? endpoint,
+    String? body,
+    ApiOptions? options,
+  });
+
   Future<Response<T>> postFile<T>({
     String? endpoint,
     String? url,
