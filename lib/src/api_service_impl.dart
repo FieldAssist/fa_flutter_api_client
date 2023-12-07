@@ -98,6 +98,21 @@ class ApiServiceImpl implements ApiService {
   }
 
   @override
+  Future<Response<T>> patch<T>({
+    String? endpoint,
+    String? body,
+    ApiOptions? options,
+  }) async {
+    return _dio!.patch<T>('$baseUrl$endpoint',
+        data: body,
+        options: Options(
+          headers: _formatHeaders(options),
+          receiveTimeout: options?.receiveTimeout,
+          sendTimeout: options?.sendTimeout,
+        ));
+  }
+
+  @override
   Future<Response<T>> postFile<T>({
     String? endpoint,
     String? keyName,
