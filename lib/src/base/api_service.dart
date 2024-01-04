@@ -10,6 +10,7 @@ abstract class ApiService {
     String? endpoint,
     String? url,
     ApiOptions? options,
+    CancelToken? cancelToken,
   });
 
   Future<Response<T>> post<T>({
@@ -17,17 +18,20 @@ abstract class ApiService {
     String? endpoint,
     String? body,
     ApiOptions? options,
+    CancelToken? cancelToken,
   });
 
   Future<Response<T>> put<T>({
     String? endpoint,
     String? body,
     ApiOptions? options,
+    CancelToken? cancelToken,
   });
 
   Future<Response<T>> delete<T>({
     String? endpoint,
     ApiOptions? options,
+    CancelToken? cancelToken,
   });
 
   Future<Response<T>> postFile<T>({
@@ -35,6 +39,7 @@ abstract class ApiService {
     String? keyName,
     File? file,
     ProgressCallback? onSendProgress,
+    CancelToken? cancelToken,
   });
 
   void setBaseUrl(String baseUrl);

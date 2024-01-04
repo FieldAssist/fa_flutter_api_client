@@ -44,8 +44,10 @@ class ApiServiceImpl implements ApiService {
     String? endpoint,
     String? url,
     ApiOptions? options,
+    CancelToken? cancelToken,
   }) async {
     return _dio!.get<T>(checkIfNotEmpty(url) ? '$url' : '$baseUrl$endpoint',
+        cancelToken: cancelToken,
         options: Options(
           headers: _formatHeaders(options),
           receiveTimeout: options?.receiveTimeout,
@@ -59,9 +61,11 @@ class ApiServiceImpl implements ApiService {
     String? url,
     String? body,
     ApiOptions? options,
+    CancelToken? cancelToken,
   }) async {
     return _dio!.post<T>(url ?? '$baseUrl$endpoint',
         data: body,
+        cancelToken: cancelToken,
         options: Options(
           headers: _formatHeaders(options),
           receiveTimeout: options?.receiveTimeout,
@@ -73,8 +77,10 @@ class ApiServiceImpl implements ApiService {
   Future<Response<T>> delete<T>({
     String? endpoint,
     ApiOptions? options,
+    CancelToken? cancelToken,
   }) async {
     return _dio!.delete<T>('$baseUrl$endpoint',
+        cancelToken: cancelToken,
         options: Options(
           headers: _formatHeaders(options),
           receiveTimeout: options?.receiveTimeout,
@@ -87,9 +93,11 @@ class ApiServiceImpl implements ApiService {
     String? endpoint,
     String? body,
     ApiOptions? options,
+    CancelToken? cancelToken,
   }) async {
     return _dio!.put<T>('$baseUrl$endpoint',
         data: body,
+        cancelToken: cancelToken,
         options: Options(
           headers: _formatHeaders(options),
           receiveTimeout: options?.receiveTimeout,
@@ -103,6 +111,7 @@ class ApiServiceImpl implements ApiService {
     String? keyName,
     File? file,
     ProgressCallback? onSendProgress,
+    CancelToken? cancelToken,
   }) async {
     endpoint = endpoint != null ? "$baseUrl$endpoint" : getFileUploadUrl();
     keyName = keyName ?? 'asset';
@@ -123,6 +132,7 @@ class ApiServiceImpl implements ApiService {
     });
     return _dioFile!.post<T>(
       endpoint,
+      cancelToken: cancelToken,
       data: formData,
       onSendProgress: onSendProgress,
     );
