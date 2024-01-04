@@ -46,6 +46,7 @@ class ApiServiceImpl implements ApiService {
     ApiOptions? options,
   }) async {
     return _dio!.get<T>(checkIfNotEmpty(url) ? '$url' : '$baseUrl$endpoint',
+        cancelToken: options?.cancelToken,
         options: Options(
           headers: _formatHeaders(options),
           receiveTimeout: options?.receiveTimeout,
@@ -62,6 +63,7 @@ class ApiServiceImpl implements ApiService {
   }) async {
     return _dio!.post<T>(url ?? '$baseUrl$endpoint',
         data: body,
+        cancelToken: options?.cancelToken,
         options: Options(
           headers: _formatHeaders(options),
           receiveTimeout: options?.receiveTimeout,
@@ -75,6 +77,7 @@ class ApiServiceImpl implements ApiService {
     ApiOptions? options,
   }) async {
     return _dio!.delete<T>('$baseUrl$endpoint',
+        cancelToken: options?.cancelToken,
         options: Options(
           headers: _formatHeaders(options),
           receiveTimeout: options?.receiveTimeout,
@@ -89,6 +92,7 @@ class ApiServiceImpl implements ApiService {
     ApiOptions? options,
   }) async {
     return _dio!.put<T>('$baseUrl$endpoint',
+        cancelToken: options?.cancelToken,
         data: body,
         options: Options(
           headers: _formatHeaders(options),
@@ -103,6 +107,7 @@ class ApiServiceImpl implements ApiService {
     String? keyName,
     File? file,
     ProgressCallback? onSendProgress,
+    ApiOptions? options,
   }) async {
     endpoint = endpoint != null ? "$baseUrl$endpoint" : getFileUploadUrl();
     keyName = keyName ?? 'asset';
@@ -123,6 +128,7 @@ class ApiServiceImpl implements ApiService {
     });
     return _dioFile!.post<T>(
       endpoint,
+      cancelToken: options?.cancelToken,
       data: formData,
       onSendProgress: onSendProgress,
     );
