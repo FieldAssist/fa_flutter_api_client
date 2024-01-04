@@ -1,3 +1,5 @@
+import 'package:dio/dio.dart';
+
 class ApiOptions {
   ApiOptions({
     this.headers = const {},
@@ -5,6 +7,7 @@ class ApiOptions {
     this.sendTimeout,
     this.refreshCache,
     this.expireDuration = const Duration(days: 1),
+    this.cancelToken,
   });
 
   Map<String, dynamic>? headers;
@@ -16,4 +19,6 @@ class ApiOptions {
   bool? refreshCache;
 
   Duration? expireDuration;
+
+  CancelToken? cancelToken;
 }
