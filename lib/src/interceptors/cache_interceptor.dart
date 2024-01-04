@@ -54,9 +54,9 @@ abstract class ApiCacheInterceptor extends Interceptor {
       final isValid = isCacheValid(
         DateTime.parse(
           keyData['appSpecificHeaders']?['expirationTime'] ?? _midnightTime,
-          DateTime.parse(
-            keyData['appSpecificHeaders']?['cachedTime'],
-          ),
+        ),
+        DateTime.parse(
+          keyData['appSpecificHeaders']?['cachedTime'],
         ),
       );
       if (!isValid) {
@@ -117,7 +117,6 @@ abstract class ApiCacheInterceptor extends Interceptor {
         response.requestOptions.headers['cacheResponse'] ?? true;
 
     if ((status == 200 || status == 201 || status == 202) && cacheResponse) {
-      log(response.requestOptions.headers.toString());
       //  await sembastHelper.put(sembastHelper.record(_dataStore, id), response);
       final _storeRef = StoreRef.main();
 
