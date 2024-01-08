@@ -18,7 +18,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 1.0.0+1
 
 environment:
-  sdk: ">=2.12.0 <3.0.0"
+  sdk: ">=2.12.0 <4.0.0"
 
 dependencies:
   flutter:
@@ -36,7 +36,7 @@ dependencies:
   fa_flutter_core:
     git:
       url: https://github.com/FieldAssist/fa_flutter_core.git
-      ref: main-new
+      ref: main
 
 dev_dependencies:
   flutter_test:
