@@ -30,12 +30,12 @@ abstract class ApiService {
     ApiOptions? options,
   });
 
-  Future<Response<T>> postFile<T>({
-    String? endpoint,
-    String? keyName,
-    File? file,
-    ProgressCallback? onSendProgress,
-  });
+  Future<Response<T>> postFile<T>(
+      {String? endpoint,
+      String? keyName,
+      File? file,
+      ProgressCallback? onSendProgress,
+      Map<String, dynamic>? queryParameters});
 
   void setBaseUrl(String baseUrl);
 
