@@ -108,8 +108,17 @@ class ApiServiceImpl implements ApiService {
     File? file,
     ProgressCallback? onSendProgress,
     ApiOptions? options,
+    Map<String, dynamic>? queryParameters,
   }) async {
     endpoint = endpoint != null ? "$baseUrl$endpoint" : getFileUploadUrl();
+    if (queryParameters != null) {
+      var queryUrl = "";
+      for (final parameter in queryParameters.entries) {
+        queryUrl =
+            "${queryUrl.isEmpty ? '?' : '&'}${parameter.key}=${parameter.value}";
+      }
+      endpoint = "$endpoint$queryUrl";
+    }
     keyName = keyName ?? 'asset';
     if (file == null) {
       throw const MyException("Attached file is null");
