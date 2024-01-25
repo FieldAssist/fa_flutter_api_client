@@ -104,13 +104,18 @@ class ApiServiceImpl implements ApiService {
   @override
   Future<Response<T>> postFile<T>({
     String? endpoint,
+    String? url,
     String? keyName,
     File? file,
     ProgressCallback? onSendProgress,
     ApiOptions? options,
     Map<String, dynamic>? queryParameters,
   }) async {
-    endpoint = endpoint != null ? "$baseUrl$endpoint" : getFileUploadUrl();
+    // if the endpoint is not passed use url parameter
+    // if both of them are null then use default fileUploadUrl
+
+    endpoint =
+        endpoint != null ? "$baseUrl$endpoint" : url ?? getFileUploadUrl();
     if (queryParameters != null) {
       var queryUrl = "";
       for (final parameter in queryParameters.entries) {
