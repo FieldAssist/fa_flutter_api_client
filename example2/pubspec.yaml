@@ -23,7 +23,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  get_it: ^7.2.0
+#  get_it: ^7.2.0
 
   fa_flutter_api_client:
     path: ../
