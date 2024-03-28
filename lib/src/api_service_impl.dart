@@ -1,13 +1,12 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
-import 'package:fa_flutter_api_client/src/api_options/api_options.dart';
+import 'package:fa_flutter_api_client/fa_flutter_api_client.dart';
+import 'package:fa_flutter_api_client/src/implementations/refresh_token_logging_interceptor_impl.dart';
 import 'package:fa_flutter_api_client/src/utils/constants.dart';
 import 'package:fa_flutter_core/fa_flutter_core.dart' hide ProgressCallback;
 import 'package:http_parser/http_parser.dart';
 import 'package:path/path.dart';
-
-import 'base/api_service.dart';
 
 class ApiServiceImpl implements ApiService {
   ApiServiceImpl({
@@ -30,10 +29,19 @@ class ApiServiceImpl implements ApiService {
     if (interceptors != null && interceptors!.isNotEmpty) {
       _dioFile!.interceptors.addAll(interceptors!);
     }
+
+    _refreshTokenDio = Dio();
+    if (interceptors != null && interceptors!.isNotEmpty && isDebug) {
+      _refreshTokenDio!.interceptors.add(
+        RefreshTokenLoggingInterceptorImpl(),
+      );
+    }
   }
 
   String baseUrl;
   Dio? _dio;
+
+  Dio? _refreshTokenDio;
 
   Dio? _dioFile;
 
@@ -60,7 +68,20 @@ class ApiServiceImpl implements ApiService {
     String? url,
     String? body,
     ApiOptions? options,
+    bool isRefreshTokenRequest = false,
   }) async {
+    if (isRefreshTokenRequest) {
+      return _refreshTokenDio!.post<T>(
+        url ?? '$baseUrl$endpoint',
+        data: body,
+        options: Options(
+          headers: _formatHeaders(options),
+          receiveTimeout: options?.receiveTimeout,
+          sendTimeout: options?.sendTimeout,
+        ),
+      );
+    }
+
     return _dio!.post<T>(url ?? '$baseUrl$endpoint',
         data: body,
         cancelToken: options?.cancelToken,
@@ -93,6 +114,21 @@ class ApiServiceImpl implements ApiService {
   }) async {
     return _dio!.put<T>('$baseUrl$endpoint',
         cancelToken: options?.cancelToken,
+        data: body,
+        options: Options(
+          headers: _formatHeaders(options),
+          receiveTimeout: options?.receiveTimeout,
+          sendTimeout: options?.sendTimeout,
+        ));
+  }
+
+  @override
+  Future<Response<T>> patch<T>({
+    String? endpoint,
+    String? body,
+    ApiOptions? options,
+  }) async {
+    return _dio!.patch<T>('$baseUrl$endpoint',
         data: body,
         options: Options(
           headers: _formatHeaders(options),
@@ -171,6 +207,15 @@ class ApiServiceImpl implements ApiService {
   @override
   Dio? getApiClient() {
     return _dio;
+  }
+
+  @override
+  Dio getRefreshTokenApiClient() {
+    if (_refreshTokenDio == null) {
+      _refreshTokenDio = Dio();
+    }
+
+    return _refreshTokenDio!;
   }
 
   @override
