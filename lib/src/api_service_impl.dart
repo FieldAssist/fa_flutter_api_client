@@ -192,7 +192,8 @@ class ApiServiceImpl implements ApiService {
       "expirationTime": options?.expireDuration != null
           ? _now.add(options!.expireDuration!).toString()
           : _midnightTime.toString(),
-      "expireDuration": options?.expireDuration
+      "expireDuration": options?.expireDuration,
+      "ignoreAutoRefresh": options?.ignoreAutoRefresh ?? false,
     };
     return headers;
   }
