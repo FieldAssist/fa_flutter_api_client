@@ -8,6 +8,7 @@ class ApiOptions {
     this.refreshCache,
     this.expireDuration = const Duration(days: 1),
     this.cancelToken,
+    this.ignoreAutoRefresh = false,
   });
 
   Map<String, dynamic>? headers;
@@ -21,4 +22,6 @@ class ApiOptions {
   Duration? expireDuration;
 
   CancelToken? cancelToken;
+
+  bool? ignoreAutoRefresh;
 }
