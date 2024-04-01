@@ -60,7 +60,8 @@ abstract class ApiCacheInterceptor extends Interceptor {
         ),
       );
       if (!isValid) {
-        if (keyData['appSpecificHeaders']?['ignoreAutoRefresh'] ?? false) {
+        if (options.headers['appSpecificHeaders']?['ignoreAutoRefresh'] ??
+            false) {
           return null;
         }
         refreshCache(options);
