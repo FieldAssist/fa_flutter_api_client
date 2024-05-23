@@ -13,6 +13,7 @@ class ApiServiceImpl implements ApiService {
   ApiServiceImpl({
     required this.baseUrl,
     this.interceptors,
+    this.apiOptions,
   }) {
     _dio = Dio()
       ..options.contentType = Headers.jsonContentType
@@ -34,6 +35,7 @@ class ApiServiceImpl implements ApiService {
 
   String baseUrl;
   Dio? _dio;
+  ApiOptions? apiOptions;
 
   Dio? _dioFile;
 
@@ -187,13 +189,19 @@ class ApiServiceImpl implements ApiService {
         seconds: 1,
       ),
     );
+    final expireDuration =
+        options?.expireDuration ?? apiOptions?.expireDuration;
     headers['appSpecificHeaders'] = {
-      "forceRefreshCache": options?.refreshCache ?? false,
-      "expirationTime": options?.expireDuration != null
-          ? _now.add(options!.expireDuration!).toString()
+      "forceRefreshCache":
+          options?.refreshCache ?? apiOptions?.refreshCache ?? false,
+      "expirationTime": expireDuration != null
+          ? _now.add(expireDuration).toString()
           : _midnightTime.toString(),
-      "expireDuration": options?.expireDuration,
-      "ignoreAutoRefresh": options?.ignoreAutoRefresh ?? false,
+      "expireDuration": options?.expireDuration ?? apiOptions?.expireDuration,
+      "ignoreAutoRefresh":
+          options?.ignoreAutoRefresh ?? apiOptions?.ignoreAutoRefresh ?? false,
+      "cacheResponse":
+          options?.cacheResponse ?? apiOptions?.cacheResponse ?? true
     };
     return headers;
   }
