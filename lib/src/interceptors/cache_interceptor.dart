@@ -117,8 +117,9 @@ abstract class ApiCacheInterceptor extends Interceptor {
       ),
     );
     final status = response.statusCode ?? 0;
-    final cacheResponse =
-        response.requestOptions.headers['cacheResponse'] ?? true;
+    final cacheResponse = response.requestOptions.headers['appSpecificHeaders']
+            ?['cacheResponse'] ??
+        true;
 
     if ((status == 200 || status == 201 || status == 202) && cacheResponse) {
       //  await sembastHelper.put(sembastHelper.record(_dataStore, id), response);
