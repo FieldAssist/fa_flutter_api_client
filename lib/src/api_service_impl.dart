@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
@@ -112,6 +113,8 @@ class ApiServiceImpl implements ApiService {
     ProgressCallback? onSendProgress,
     ApiOptions? options,
     Map<String, dynamic>? queryParameters,
+    Map<String, dynamic>? dataParameters,
+    String? dataKeyName,
   }) async {
     // if the endpoint is not passed use url parameter
     // if both of them are null then use default fileUploadUrl
@@ -127,6 +130,7 @@ class ApiServiceImpl implements ApiService {
       endpoint = "$endpoint$queryUrl";
     }
     keyName = keyName ?? 'asset';
+    dataKeyName = dataKeyName ?? 'data';
     if (file == null) {
       throw const MyException("Attached file is null");
     }
@@ -136,6 +140,8 @@ class ApiServiceImpl implements ApiService {
     final type = mimeType.split('/')[0];
     final subType = mimeType.split('/')[1];
     final formData = FormData.fromMap({
+      dataKeyName:
+          dataParameters == null ? null : jsonEncode(dataParameters).toString(),
       keyName: await MultipartFile.fromFile(
         file.path,
         filename: fileName,
