@@ -1,3 +1,4 @@
+
 import 'dart:convert';
 import 'dart:io';
 
@@ -106,6 +107,7 @@ class ApiServiceImpl implements ApiService {
 
   @override
   Future<Response<T>> postFile<T>({
+    bool isJsonEncode = true,
     String? endpoint,
     String? url,
     String? keyName,
@@ -141,7 +143,7 @@ class ApiServiceImpl implements ApiService {
     final subType = mimeType.split('/')[1];
     final formData = FormData.fromMap({
       dataKeyName:
-          dataParameters == null ? null : jsonEncode(dataParameters).toString(),
+          dataParameters == null ? null : (isJsonEncode ? jsonEncode(dataParameters).toString() : dataParameters),
       keyName: await MultipartFile.fromFile(
         file.path,
         filename: fileName,
