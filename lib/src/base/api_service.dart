@@ -31,6 +31,7 @@ abstract class ApiService {
   });
 
   Future<Response<T>> postFile<T>({
+    bool isJsonEncode = true,
     String? endpoint,
     String? url,
     String? keyName,

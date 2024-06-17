@@ -106,6 +106,7 @@ class ApiServiceImpl implements ApiService {
 
   @override
   Future<Response<T>> postFile<T>({
+    bool isJsonEncode = true,
     String? endpoint,
     String? url,
     String? keyName,
@@ -139,15 +140,23 @@ class ApiServiceImpl implements ApiService {
     mimeType ??= 'application/octet-stream';
     final type = mimeType.split('/')[0];
     final subType = mimeType.split('/')[1];
-    final formData = FormData.fromMap({
-      dataKeyName:
-          dataParameters == null ? null : jsonEncode(dataParameters).toString(),
+    final formDataMap = {
+      if (isJsonEncode)
+        dataKeyName: dataParameters == null
+            ? null
+            : jsonEncode(dataParameters).toString(),
       keyName: await MultipartFile.fromFile(
         file.path,
         filename: fileName,
         contentType: MediaType(type, subType),
       ),
-    });
+    };
+    if (dataParameters != null && !isJsonEncode) {
+      formDataMap.addAll(dataParameters);
+    }
+
+    final formData = FormData.fromMap(formDataMap);
+
     return _dioFile!.post<T>(
       endpoint,
       cancelToken: options?.cancelToken,
