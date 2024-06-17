@@ -176,7 +176,8 @@ class ApiServiceImpl implements ApiService {
     mimeType ??= 'application/octet-stream';
     final type = mimeType.split('/')[0];
     final subType = mimeType.split('/')[1];
-    final formData = FormData.fromMap({
+    final formDataMap = {
+      if(isJsonEncode)
       dataKeyName:
           dataParameters == null ? null : (isJsonEncode ? jsonEncode(dataParameters).toString() : dataParameters),
       keyName: await MultipartFile.fromFile(
@@ -184,7 +185,13 @@ class ApiServiceImpl implements ApiService {
         filename: fileName,
         contentType: MediaType(type, subType),
       ),
-    });
+    };
+     if (dataParameters != null) {
+    formDataMap.addAll(dataParameters);
+  }
+
+  final formData = FormData.fromMap(formDataMap);
+
     return _dioFile!.post<T>(
       endpoint,
       cancelToken: options?.cancelToken,
