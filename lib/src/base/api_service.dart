@@ -38,7 +38,6 @@ abstract class ApiService {
     ProgressCallback? onSendProgress,
     Map<String, dynamic>? queryParameters,
     Map<String, dynamic>? dataParameters,
-    String? dataKeyName,
   });
 
   void setBaseUrl(String baseUrl);
