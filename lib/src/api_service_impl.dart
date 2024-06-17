@@ -142,7 +142,6 @@ class ApiServiceImpl implements ApiService {
 
   @override
   Future<Response<T>> postFile<T>({
-    bool isJsonEncode = true,
     String? endpoint,
     String? url,
     String? keyName,
@@ -151,7 +150,6 @@ class ApiServiceImpl implements ApiService {
     ApiOptions? options,
     Map<String, dynamic>? queryParameters,
     Map<String, dynamic>? dataParameters,
-    String? dataKeyName,
   }) async {
     // if the endpoint is not passed use url parameter
     // if both of them are null then use default fileUploadUrl
@@ -167,7 +165,6 @@ class ApiServiceImpl implements ApiService {
       endpoint = "$endpoint$queryUrl";
     }
     keyName = keyName ?? 'asset';
-    dataKeyName = dataKeyName ?? 'data';
     if (file == null) {
       throw const MyException("Attached file is null");
     }
@@ -176,10 +173,8 @@ class ApiServiceImpl implements ApiService {
     mimeType ??= 'application/octet-stream';
     final type = mimeType.split('/')[0];
     final subType = mimeType.split('/')[1];
-    final formDataMap = {
-      if(isJsonEncode)
-      dataKeyName:
-          dataParameters == null ? null : (isJsonEncode ? jsonEncode(dataParameters).toString() : dataParameters),
+    Map<String,dynamic> formDataMap = {
+     
       keyName: await MultipartFile.fromFile(
         file.path,
         filename: fileName,

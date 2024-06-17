@@ -38,7 +38,7 @@ abstract class ApiService {
   });
 
   Future<Response<T>> postFile<T>({
-    bool isJsonEncode = true,
+
     String? endpoint,
     String? url,
     String? keyName,
@@ -46,7 +46,7 @@ abstract class ApiService {
     ProgressCallback? onSendProgress,
     Map<String, dynamic>? queryParameters,
     Map<String, dynamic>? dataParameters,
-    String? dataKeyName,
+
   });
 
   void setBaseUrl(String baseUrl);
