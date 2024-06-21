@@ -189,7 +189,7 @@ class ApiServiceImpl implements ApiService {
   String getIsAuthRequiredKey() => Constants.isAuthRequiredAPIKey;
 
   Map<String, dynamic> _formatHeaders(ApiOptions? options) {
-    final headers = {
+    var headers = {
       ...options?.headers ?? {},
     };
     final _now = DateTime.now();
@@ -201,6 +201,11 @@ class ApiServiceImpl implements ApiService {
     );
     final expireDuration =
         options?.expireDuration ?? apiOptions?.expireDuration;
+
+    headers = headers[getIsAuthRequiredKey()]
+        ? headers
+        : headers.remove('Authorization');
+
     headers['appSpecificHeaders'] = {
       "forceRefreshCache":
           options?.refreshCache ?? apiOptions?.refreshCache ?? false,
