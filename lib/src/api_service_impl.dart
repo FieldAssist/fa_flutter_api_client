@@ -189,7 +189,7 @@ class ApiServiceImpl implements ApiService {
   String getIsAuthRequiredKey() => Constants.isAuthRequiredAPIKey;
 
   Map<String, dynamic> _formatHeaders(ApiOptions? options) {
-    final headers = {
+    var headers = {
       ...options?.headers ?? {},
     };
     final _now = DateTime.now();
@@ -213,7 +213,7 @@ class ApiServiceImpl implements ApiService {
       "cacheResponse":
           options?.cacheResponse ?? apiOptions?.cacheResponse ?? true
     };
-    headers[getIsAuthRequiredKey()]
+   headers = headers[getIsAuthRequiredKey()]
         ? headers
         : headers.remove('Authorization');
     return headers;
