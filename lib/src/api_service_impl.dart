@@ -213,6 +213,9 @@ class ApiServiceImpl implements ApiService {
       "cacheResponse":
           options?.cacheResponse ?? apiOptions?.cacheResponse ?? true
     };
+    headers[getIsAuthRequiredKey()]
+        ? headers
+        : headers.remove('Authorization');
     return headers;
   }
 
