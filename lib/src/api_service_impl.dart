@@ -189,9 +189,9 @@ class ApiServiceImpl implements ApiService {
   String getIsAuthRequiredKey() => Constants.isAuthRequiredAPIKey;
 
   Map<String, dynamic> _formatHeaders(ApiOptions? options) {
-    var headers = {
-      ...options?.headers ?? {},
-    };
+    Map<String, dynamic> headers = {};
+      headers = options?.headers ?? {};
+    
     final _now = DateTime.now();
     final _midnightTime =
         DateTime(_now.year, _now.month, _now.day + 1).subtract(
