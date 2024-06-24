@@ -213,10 +213,19 @@ class ApiServiceImpl implements ApiService {
       "cacheResponse":
           options?.cacheResponse ?? apiOptions?.cacheResponse ?? true
     };
-   headers = headers[getIsAuthRequiredKey()] == true
-        ? headers
-        : headers.remove('Authorization');
+    // Debug prints to check the value and type
+  var authKey = getIsAuthRequiredKey();
+  print('Auth Key: $authKey');
+  print('Auth Key Value: ${headers[authKey]}');
+  print('Auth Key Value Type: ${headers[authKey]?.runtimeType}');
+
+  // Ensure the key exists in headers and is a boolean
+  if (headers[authKey] is bool && headers[authKey] == true) {
     return headers;
+  } else {
+    headers.remove('Authorization');
+    return headers;
+  }
   }
 
   @override
