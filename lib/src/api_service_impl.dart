@@ -189,9 +189,9 @@ class ApiServiceImpl implements ApiService {
   String getIsAuthRequiredKey() => Constants.isAuthRequiredAPIKey;
 
   Map<String, dynamic> _formatHeaders(ApiOptions? options) {
-    Map<String, dynamic> headers = {};
-      headers = options?.headers ?? {};
-    
+    var headers = {
+      ...options?.headers ?? {},
+    };
     final _now = DateTime.now();
     final _midnightTime =
         DateTime(_now.year, _now.month, _now.day + 1).subtract(
@@ -199,6 +199,9 @@ class ApiServiceImpl implements ApiService {
         seconds: 1,
       ),
     );
+    headers = headers[getIsAuthRequiredKey()]
+        ? headers
+        : headers.remove('Authorization');
     final expireDuration =
         options?.expireDuration ?? apiOptions?.expireDuration;
     headers['appSpecificHeaders'] = {
@@ -213,9 +216,7 @@ class ApiServiceImpl implements ApiService {
       "cacheResponse":
           options?.cacheResponse ?? apiOptions?.cacheResponse ?? true
     };
-   headers = headers[getIsAuthRequiredKey()] ?? true == true
-        ? headers
-        : headers.remove('Authorization');
+   
     return headers;
   }
 
