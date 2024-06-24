@@ -32,9 +32,6 @@ class ApiServiceImpl implements ApiService {
     if (interceptors != null && interceptors!.isNotEmpty) {
       _dioFile!.interceptors.addAll(interceptors!);
     }
-    if(!_dio?.options.headers[getIsAuthRequiredKey]){
-      _dio?.options.headers.remove("Authorization") ;
-    }
   }
 
   String baseUrl;
