@@ -199,11 +199,10 @@ class ApiServiceImpl implements ApiService {
         seconds: 1,
       ),
     );
-    final h =  headers.remove('Authorization');
     final key = headers[getIsAuthRequiredKey()];
-    headers = key == true
-        ? headers
-        : h;
+    if(!key){
+      headers.remove('Authorization');
+    }
     final expireDuration =
         options?.expireDuration ?? apiOptions?.expireDuration;
     headers['appSpecificHeaders'] = {
