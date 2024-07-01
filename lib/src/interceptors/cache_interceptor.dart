@@ -107,22 +107,21 @@ abstract class ApiCacheInterceptor extends Interceptor {
   }
 
   Future<void> saveResponse(Response response) async {
-    final _apiDataKey = _formStringFromRequestHeaders(response.requestOptions);
-
-    final _now = DateTime.now();
-    final _midnightTime =
-        DateTime(_now.year, _now.month, _now.day + 1).subtract(
-      Duration(
-        seconds: 1,
-      ),
-    );
     final status = response.statusCode ?? 0;
     final cacheResponse = response.requestOptions.headers['appSpecificHeaders']
             ?['cacheResponse'] ??
         true;
 
     if ((status == 200 || status == 201 || status == 202) && cacheResponse) {
-      //  await sembastHelper.put(sembastHelper.record(_dataStore, id), response);
+      final _apiDataKey =
+          _formStringFromRequestHeaders(response.requestOptions);
+      final _now = DateTime.now();
+      final _midnightTime =
+          DateTime(_now.year, _now.month, _now.day + 1).subtract(
+        Duration(
+          seconds: 1,
+        ),
+      );
       final _storeRef = StoreRef.main();
 
       await sembastAppDb.put(
