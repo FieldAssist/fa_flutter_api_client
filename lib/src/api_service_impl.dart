@@ -152,12 +152,15 @@ class ApiServiceImpl implements ApiService {
 
     final formData = FormData.fromMap(formDataMap);
 
-    return _dioFile!.post<T>(
-      endpoint,
-      cancelToken: options?.cancelToken,
-      data: formData,
-      onSendProgress: onSendProgress,
-    );
+    return _dioFile!.post<T>(endpoint,
+        cancelToken: options?.cancelToken,
+        data: formData,
+        onSendProgress: onSendProgress,
+        options: Options(
+          headers: _formatHeaders(options),
+          receiveTimeout: options?.receiveTimeout,
+          sendTimeout: options?.sendTimeout,
+        ));
   }
 
   @override
