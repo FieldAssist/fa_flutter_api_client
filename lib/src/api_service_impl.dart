@@ -48,13 +48,17 @@ class ApiServiceImpl implements ApiService {
     String? url,
     ApiOptions? options,
   }) async {
-    return _dio!.get<T>(checkIfNotEmpty(url) ? '$url' : '$baseUrl$endpoint',
-        cancelToken: options?.cancelToken,
-        options: Options(
-          headers: _formatHeaders(options),
-          receiveTimeout: options?.receiveTimeout,
-          sendTimeout: options?.sendTimeout,
-        ));
+    try {
+      return _dio!.get<T>(checkIfNotEmpty(url) ? '$url' : '$baseUrl$endpoint',
+          cancelToken: options?.cancelToken,
+          options: Options(
+            headers: _formatHeaders(options),
+            receiveTimeout: options?.receiveTimeout,
+            sendTimeout: options?.sendTimeout,
+          ));
+    } on DioException catch (e) {
+      handleDioException(e);
+    }
   }
 
   @override
@@ -64,14 +68,18 @@ class ApiServiceImpl implements ApiService {
     String? body,
     ApiOptions? options,
   }) async {
-    return _dio!.post<T>(url ?? '$baseUrl$endpoint',
-        data: body,
-        cancelToken: options?.cancelToken,
-        options: Options(
-          headers: _formatHeaders(options),
-          receiveTimeout: options?.receiveTimeout,
-          sendTimeout: options?.sendTimeout,
-        ));
+    try {
+      return _dio!.post<T>(url ?? '$baseUrl$endpoint',
+          data: body,
+          cancelToken: options?.cancelToken,
+          options: Options(
+            headers: _formatHeaders(options),
+            receiveTimeout: options?.receiveTimeout,
+            sendTimeout: options?.sendTimeout,
+          ));
+    } on DioException catch (e) {
+      handleDioException(e);
+    }
   }
 
   @override
@@ -79,13 +87,17 @@ class ApiServiceImpl implements ApiService {
     String? endpoint,
     ApiOptions? options,
   }) async {
-    return _dio!.delete<T>('$baseUrl$endpoint',
-        cancelToken: options?.cancelToken,
-        options: Options(
-          headers: _formatHeaders(options),
-          receiveTimeout: options?.receiveTimeout,
-          sendTimeout: options?.sendTimeout,
-        ));
+    try {
+      return _dio!.delete<T>('$baseUrl$endpoint',
+          cancelToken: options?.cancelToken,
+          options: Options(
+            headers: _formatHeaders(options),
+            receiveTimeout: options?.receiveTimeout,
+            sendTimeout: options?.sendTimeout,
+          ));
+    } on DioException catch (e) {
+      handleDioException(e);
+    }
   }
 
   @override
@@ -94,14 +106,18 @@ class ApiServiceImpl implements ApiService {
     String? body,
     ApiOptions? options,
   }) async {
-    return _dio!.put<T>('$baseUrl$endpoint',
-        cancelToken: options?.cancelToken,
-        data: body,
-        options: Options(
-          headers: _formatHeaders(options),
-          receiveTimeout: options?.receiveTimeout,
-          sendTimeout: options?.sendTimeout,
-        ));
+    try {
+      return _dio!.put<T>('$baseUrl$endpoint',
+          cancelToken: options?.cancelToken,
+          data: body,
+          options: Options(
+            headers: _formatHeaders(options),
+            receiveTimeout: options?.receiveTimeout,
+            sendTimeout: options?.sendTimeout,
+          ));
+    } on DioException catch (e) {
+      handleDioException(e);
+    }
   }
 
   @override
@@ -119,12 +135,12 @@ class ApiServiceImpl implements ApiService {
     // if both of them are null then use default fileUploadUrl
 
     endpoint =
-        endpoint != null ? "$baseUrl$endpoint" : url ?? getFileUploadUrl();
+    endpoint != null ? "$baseUrl$endpoint" : url ?? getFileUploadUrl();
     if (queryParameters != null) {
       var queryUrl = "";
       for (final parameter in queryParameters.entries) {
         queryUrl =
-            "${queryUrl.isEmpty ? '?' : '&'}${parameter.key}=${parameter.value}";
+        "${queryUrl.isEmpty ? '?' : '&'}${parameter.key}=${parameter.value}";
       }
       endpoint = "$endpoint$queryUrl";
     }
@@ -151,16 +167,19 @@ class ApiServiceImpl implements ApiService {
     }
 
     final formData = FormData.fromMap(formDataMap);
-
-    return _dioFile!.post<T>(endpoint,
-        cancelToken: options?.cancelToken,
-        data: formData,
-        onSendProgress: onSendProgress,
-        options: Options(
-          headers: _formatHeaders(options),
-          receiveTimeout: options?.receiveTimeout,
-          sendTimeout: options?.sendTimeout,
-        ));
+    try {
+      return _dioFile!.post<T>(endpoint,
+          cancelToken: options?.cancelToken,
+          data: formData,
+          onSendProgress: onSendProgress,
+          options: Options(
+            headers: _formatHeaders(options),
+            receiveTimeout: options?.receiveTimeout,
+            sendTimeout: options?.sendTimeout,
+          ));
+    } on DioException catch (e) {
+      handleDioException(e);
+    }
   }
 
   @override
@@ -197,7 +216,7 @@ class ApiServiceImpl implements ApiService {
     };
     final _now = DateTime.now();
     final _midnightTime =
-        DateTime(_now.year, _now.month, _now.day + 1).subtract(
+    DateTime(_now.year, _now.month, _now.day + 1).subtract(
       Duration(
         seconds: 1,
       ),
@@ -206,15 +225,15 @@ class ApiServiceImpl implements ApiService {
         options?.expireDuration ?? apiOptions?.expireDuration;
     headers['appSpecificHeaders'] = {
       "forceRefreshCache":
-          options?.refreshCache ?? apiOptions?.refreshCache ?? false,
+      options?.refreshCache ?? apiOptions?.refreshCache ?? false,
       "expirationTime": expireDuration != null
           ? _now.add(expireDuration).toString()
           : _midnightTime.toString(),
       "expireDuration": options?.expireDuration ?? apiOptions?.expireDuration,
       "ignoreAutoRefresh":
-          options?.ignoreAutoRefresh ?? apiOptions?.ignoreAutoRefresh ?? false,
+      options?.ignoreAutoRefresh ?? apiOptions?.ignoreAutoRefresh ?? false,
       "cacheResponse":
-          options?.cacheResponse ?? apiOptions?.cacheResponse ?? true
+      options?.cacheResponse ?? apiOptions?.cacheResponse ?? true
     };
     return headers;
   }
@@ -222,5 +241,47 @@ class ApiServiceImpl implements ApiService {
   @override
   Future<String> requestTranformer(RequestOptions options) {
     return _dio!.transformer.transformRequest(options);
+  }
+
+  void handleDioException(DioException e) {
+    String errorMessage;
+    if (e.response != null) {
+      errorMessage = errorForDioException(e);
+    } else {
+      errorMessage = "Error: ${e.message}";
+    }
+    throw MyException(errorMessage);
+  }
+
+  String errorForDioException(DioException e) {
+    String errorMessage;
+    if (e.response != null) {
+      final statusCode = e.response!.statusCode ?? -1;
+      final statusGroup = (statusCode ~/ 100).toString();
+      switch (statusGroup) {
+        case '2':
+          errorMessage = "Success: $statusCode - ${e.response!.statusMessage}";
+          break;
+        case '3':
+          errorMessage =
+          "Redirection: $statusCode - ${e.response!.statusMessage}";
+          break;
+        case '4':
+          errorMessage = e.response?.data != null
+              ? '${e.response?.data}'
+              : "Client Error: $statusCode - ${e.response!.statusMessage}";
+          break;
+        case '5':
+          errorMessage =
+          "Server Error: $statusCode - ${e.response!.statusMessage}";
+          break;
+        default:
+          errorMessage = "Error: $statusCode - ${e.response!.statusMessage}";
+          break;
+      }
+    } else {
+      errorMessage = "Network Error: Please check your internet connection.";
+    }
+    return "$errorMessage❗️";
   }
 }
