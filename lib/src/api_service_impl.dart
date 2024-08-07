@@ -46,10 +46,12 @@ class ApiServiceImpl implements ApiService {
   Future<Response<T>> get<T>({
     String? endpoint,
     String? url,
+    String? body,
     ApiOptions? options,
   }) async {
     return _dio!.get<T>(checkIfNotEmpty(url) ? '$url' : '$baseUrl$endpoint',
         cancelToken: options?.cancelToken,
+        data: body,
         options: Options(
           headers: _formatHeaders(options),
           receiveTimeout: options?.receiveTimeout,
