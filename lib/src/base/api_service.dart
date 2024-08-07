@@ -9,6 +9,7 @@ abstract class ApiService {
   Future<Response<T>> get<T>({
     String? endpoint,
     String? url,
+    String? body,
     ApiOptions? options,
   });
 
