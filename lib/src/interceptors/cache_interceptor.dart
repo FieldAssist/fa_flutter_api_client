@@ -37,49 +37,54 @@ abstract class ApiCacheInterceptor extends Interceptor {
   }
 
   Future<Response?> _getCacheResponse(RequestOptions options) async {
-    final _now = DateTime.now();
-    final _midnightTime =
-        DateTime(_now.year, _now.month, _now.day + 1).subtract(
-      Duration(
-        seconds: 1,
-      ),
-    );
-
-    final _apiDataKey = _formStringFromRequestHeaders(options);
-    final _storeRef = StoreRef.main();
-    final keyData = await sembastAppDb.get(_storeRef.record(_apiDataKey))
-        as Map<String, dynamic>?;
-
-    if (keyData != null) {
-      final isValid = isCacheValid(
-        DateTime.parse(
-          keyData['appSpecificHeaders']?['expirationTime'] ?? _midnightTime,
-        ),
-        DateTime.parse(
-          keyData['appSpecificHeaders']?['cachedTime'],
+    try {
+      final _now = DateTime.now();
+      final _midnightTime =
+          DateTime(_now.year, _now.month, _now.day + 1).subtract(
+        Duration(
+          seconds: 1,
         ),
       );
-      if (!isValid) {
-        if (options.headers['appSpecificHeaders']?['ignoreAutoRefresh'] ??
-            false) {
-          return null;
+
+      final _apiDataKey = _formStringFromRequestHeaders(options);
+      final _storeRef = StoreRef.main();
+      final keyData = await sembastAppDb.get(_storeRef.record(_apiDataKey))
+          as Map<String, dynamic>?;
+
+      if (keyData != null) {
+        final isValid = isCacheValid(
+          DateTime.parse(
+            keyData['appSpecificHeaders']?['expirationTime'] ?? _midnightTime,
+          ),
+          DateTime.parse(
+            keyData['appSpecificHeaders']?['cachedTime'],
+          ),
+        );
+        if (!isValid) {
+          if (options.headers['appSpecificHeaders']?['ignoreAutoRefresh'] ??
+              false) {
+            return null;
+          }
+          refreshCache(options);
         }
-        refreshCache(options);
+
+        logger.v("**************  🔥 VALIDATING CACHE 🔥   ***********");
+        return Response(
+          requestOptions: options,
+          data: jsonDecode(keyData['appSpecificHeaders']?['data'] ?? ''),
+          statusCode: cache_response_status,
+          redirects: [],
+          extra: {},
+          isRedirect: false,
+          statusMessage: 'Cached Data',
+        );
       }
 
-      logger.v("**************  🔥 VALIDATING CACHE 🔥   ***********");
-      return Response(
-        requestOptions: options,
-        data: jsonDecode(keyData['appSpecificHeaders']?['data'] ?? ''),
-        statusCode: cache_response_status,
-        redirects: [],
-        extra: {},
-        isRedirect: false,
-        statusMessage: 'Cached Data',
-      );
+      return null;
+    } catch (e, stk) {
+      logger.e(e, stk);
+      return null;
     }
-
-    return null;
   }
 
   void refreshCache(RequestOptions option);
