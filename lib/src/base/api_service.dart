@@ -18,6 +18,7 @@ abstract class ApiService {
     String? endpoint,
     String? body,
     ApiOptions? options,
+    bool isRefreshTokenRequest = false,
   });
 
   Future<Response<T>> put<T>({
@@ -28,6 +29,12 @@ abstract class ApiService {
 
   Future<Response<T>> delete<T>({
     String? endpoint,
+    ApiOptions? options,
+  });
+
+  Future<Response<T>> patch<T>({
+    String? endpoint,
+    String? body,
     ApiOptions? options,
   });
 
@@ -50,6 +57,8 @@ abstract class ApiService {
   Dio? getDioFile();
 
   Dio? getApiClient();
+
+  Dio? getRefreshTokenApiClient();
 
   /// get key for disabling auth for some requests.
   String getIsAuthRequiredKey();
