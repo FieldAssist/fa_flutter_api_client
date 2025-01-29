@@ -7,13 +7,13 @@ environment:
   sdk: '>=2.15.0 <4.0.0'
 
 dependencies:
-  dio: ^5.4.2
+  dio: ^5.8.0
 
   # Core
   fa_flutter_core:
     git:
       url: https://github.com/FieldAssist/fa_flutter_core.git
-      ref: main
+      ref: feat/version_upgrade
 
 dev_dependencies:
   flutter_test:
