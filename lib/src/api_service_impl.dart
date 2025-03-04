@@ -138,7 +138,6 @@ class ApiServiceImpl implements ApiService {
     endpoint =
         endpoint != null ? "$baseUrl$endpoint" : url ?? getFileUploadUrl();
     if (queryParameters != null) {
-      print("object");
       var queryUrl = "";
       for (final parameter in queryParameters.entries) {
         queryUrl =
