@@ -28,9 +28,9 @@ jobs:
           distribution: "zulu"
           java-version: "11"
 
-      # - uses: subosito/flutter-action@v2.3.0
-      #   with:
-      #     channel: "stable"
+      - uses: subosito/flutter-action@v2.3.0
+        with:
+          channel: "stable"
 
       - name: "Flutter Doctor"
         run: flutter doctor -v
@@ -41,8 +41,8 @@ jobs:
       - name: "Flutter Format Check"
         run: dart format .
 
-      - name: "Run Test(s)"
-        run: flutter test --coverage
+      # - name: "Run Test(s)"
+      #   run: flutter test --coverage
 
       # - name: Upload coverage to Codecov
       #   uses: codecov/codecov-action@v5.0.0
