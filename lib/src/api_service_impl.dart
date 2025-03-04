@@ -132,7 +132,7 @@ class ApiServiceImpl implements ApiService {
     }
     keyName = keyName ?? 'asset';
     if (file == null) {
-      throw const MyException("Attached file is null");
+      throw const MyException("Attached file is ");
     }
     final fileName = basename(file.path);
     var mimeType = mime(fileName);
