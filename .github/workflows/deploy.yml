@@ -7,10 +7,10 @@ name: Test
 on:
   commit:
     branches: [feat/add-patch]
-  # push:
-  #   branches: [main, develop]
-  # pull_request:
-  #   branches: [main, develop]
+  push:
+    branches: [feat/add-patch]
+  pull_request:
+    branches: [feat/add-patch]
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
