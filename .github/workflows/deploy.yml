@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3.0.0
 
       #      - uses: fregante/setup-git-token@v1
       #        with:
@@ -32,16 +32,16 @@ jobs:
         with:
           channel: "stable"
 
-      - name: 'Flutter Doctor'
+      - name: "Flutter Doctor"
         run: flutter doctor -v
 
-      - name: 'Flutter Pub Get'
+      - name: "Flutter Pub Get"
         run: flutter pub get
 
-      - name: 'Flutter Format Check'
+      - name: "Flutter Format Check"
         run: dart format .
 
-      - name: 'Run Test(s)'
+      - name: "Run Test(s)"
         run: flutter test --coverage
 
       - name: Upload coverage to Codecov
