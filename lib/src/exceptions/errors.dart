@@ -113,6 +113,14 @@ class UnauthenticatedError extends DioException {
         ? response?.data
         : 'Unauthenticated, Please try again';
   }
+
+  UnauthenticatedError.fromDioError(DioException error)
+      : super(
+          requestOptions: error.requestOptions,
+          response: error.response,
+          type: error.type,
+          error: error,
+        );
 }
 
 class UnknownApiError extends DioException {
@@ -176,5 +184,41 @@ class UnstableInternetError extends DioException {
   @override
   String toString() {
     return 'Poor internet connection';
+  }
+}
+
+class RequestCancelError extends DioException {
+  RequestCancelError({
+    required requestOptions,
+    response,
+    type = DioExceptionType.unknown,
+    error,
+    this.showStackTrace = false,
+  }) : super(
+          requestOptions: requestOptions,
+          response: response,
+          type: type,
+          error: error,
+        );
+
+  RequestCancelError.fromDioError(DioException error, bool showStackTrace)
+      : showStackTrace = showStackTrace,
+        super(
+          type: error.type,
+          error: error.error,
+          requestOptions: error.requestOptions,
+          response: error.response,
+        );
+
+  /// showStackTrace true means DEV flavor
+  final bool showStackTrace;
+
+  @override
+  String toString() {
+    if (!showStackTrace) {
+      return "Error: ${response?.statusCode ?? ""} Something Went Wrong!";
+    }
+
+    return "Token Cancelled Error: ${response?.statusCode ?? ""} ${error ?? response?.statusMessage ?? ""}";
   }
 }
