@@ -29,29 +29,29 @@ abstract class ErrorInterceptor extends Interceptor {
     if (error.type == DioExceptionType.badResponse) {
       final code = error.response!.statusCode;
       if (code == 401) {
+        final unauthenticatedError = UnauthenticatedError.fromDioError(error);
         // IF headers contains key [isAuthRequired]
         // then not clearing auth data when 401 occurs
-        final isLoginApi = error.requestOptions.headers
-            .containsKey(Constants.isAuthRequiredAPIKey);
+        final isLoginApi = checkIsLoginApi(unauthenticatedError);
         // Delaying for 300ms so that other futures
         // can complete before navigating to unauthorizedScreen
-        Future.delayed(
-          const Duration(milliseconds: 300),
-          () {
-            if (!isLoginApi) {
-              handleUnauthenticatedUser();
-            }
-            return handler.reject(
-              UnauthenticatedError(
-                requestOptions: error.requestOptions,
-                response: error.response,
-                type: error.type,
-                error: error.error,
-              ),
-            );
-          },
+        // Future.delayed(
+        //   const Duration(milliseconds: 300),
+        //   () {
+        //   },
+        // );
+        if (!isLoginApi) {
+          await handleUnauthenticatedUser(unauthenticatedError);
+        }
+        return handler.reject(
+          UnauthenticatedError(
+            requestOptions: error.requestOptions,
+            response: error.response,
+            type: error.type,
+            error: error.error,
+          ),
         );
-        return null;
+        // return null;
       } else if (code == 403) {
         return handler.reject(
           UnauthorizedError(
@@ -109,6 +109,16 @@ abstract class ErrorInterceptor extends Interceptor {
         ),
       );
     }
+
+    if (error.type == DioExceptionType.cancel) {
+      return handler.reject(
+        RequestCancelError.fromDioError(
+          error,
+          showStackTrace,
+        ),
+      );
+    }
+
     return handler.reject(
       UnknownApiError(
         requestOptions: error.requestOptions,
@@ -120,5 +130,11 @@ abstract class ErrorInterceptor extends Interceptor {
     );
   }
 
-  FutureOr handleUnauthenticatedUser();
+  bool checkIsLoginApi(UnauthenticatedError error) {
+    return error.requestOptions.headers
+        .containsKey(Constants.isAuthRequiredAPIKey);
+  }
+
+  /// It will be called when `401` occurs and [isAuthRequiredAPIKey] is not present in headers
+  FutureOr handleUnauthenticatedUser(UnauthenticatedError error);
 }
