@@ -9,7 +9,7 @@ class ApiOptions {
     this.cacheResponse,
     this.expireDuration,
     this.cancelToken,
-    this.ignoreAutoRefresh = false,
+    this.ignoreAutoRefresh = true,
   });
 
   Map<String, dynamic>? headers;
