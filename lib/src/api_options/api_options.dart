@@ -7,7 +7,7 @@ class ApiOptions {
     this.sendTimeout,
     this.refreshCache,
     this.cacheResponse,
-    this.expireDuration = const Duration(days: 1),
+    this.expireDuration,
     this.cancelToken,
     this.ignoreAutoRefresh = false,
   });
