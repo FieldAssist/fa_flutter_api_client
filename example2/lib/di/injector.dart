@@ -14,7 +14,7 @@ class Injector {
   Future<void> init() async {
     locator.registerLazySingleton<NetworkInfo>(
       () => NetworkInfoImpl(
-        connectionChecker: InternetConnectionChecker(),
+        connectionChecker: InternetConnectionChecker.instance,
       ),
     );
 
