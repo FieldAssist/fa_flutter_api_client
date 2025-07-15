@@ -154,8 +154,25 @@ abstract class ApiCacheInterceptor extends Interceptor {
     RequestOptions options,
   ) {
     final url = options.uri.toString().replaceFirst(options.baseUrl, '');
-    final body = jsonEncode(options.data ?? {});
+    String body;
+
+    try {
+      if (options.data is FormData) {
+        final formData = options.data as FormData;
+
+        final fieldsMap = Map.fromEntries(
+          formData.fields.map((e) => MapEntry(e.key, e.value)),
+        );
+        body = jsonEncode(fieldsMap);
+      } else {
+        body = jsonEncode(options.data ?? {});
+      }
+    } catch (e) {
+      body = '{}';
+    }
+
     final queryParams = jsonEncode(options.queryParameters);
+
     return '$url/$queryParams/$body';
   }
 
