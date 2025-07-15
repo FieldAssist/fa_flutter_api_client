@@ -43,6 +43,7 @@ abstract class ApiService {
     String? url,
     String? keyName,
     File? file,
+    ApiOptions? options,
     ProgressCallback? onSendProgress,
     Map<String, dynamic>? queryParameters,
     Map<String, dynamic>? dataParameters,
