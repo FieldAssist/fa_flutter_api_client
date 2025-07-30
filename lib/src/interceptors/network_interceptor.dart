@@ -1,14 +1,16 @@
 import 'package:dio/dio.dart';
+import 'package:fa_flutter_core/fa_flutter_core.dart';
 
+import '../../fa_flutter_api_client.dart';
 import '../exceptions/errors.dart';
 
-abstract class NetworkInterceptor extends Interceptor {
+class NetworkInterceptor extends Interceptor {
   @override
   Future<void> onRequest(
     RequestOptions options,
     RequestInterceptorHandler handler,
   ) async {
-    final isConnected = await isInternetConnected();
+    final isConnected = await NetworkConnectivityService.instance.isConnected;
     if (!isConnected) {
       // Intentional delay to mimic making server request behavior
       await Future.delayed(getDelay());
@@ -27,6 +29,4 @@ abstract class NetworkInterceptor extends Interceptor {
   Duration getDelay() {
     return Duration(milliseconds: 500);
   }
-
-  Future<bool> isInternetConnected();
 }
