@@ -11,3 +11,4 @@ export 'src/api_options/api_options.dart';
 export 'src/interceptors/cache_interceptor.dart';
 export 'src/interceptors/cancel_token_interceptor.dart';
 export 'src/interceptors/refresh_token_interceptor.dart';
+export 'src/utils/network_checker.dart';
