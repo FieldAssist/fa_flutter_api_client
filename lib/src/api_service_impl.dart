@@ -10,23 +10,21 @@ import 'package:http_parser/http_parser.dart';
 import 'package:path/path.dart';
 
 class ApiServiceImpl implements ApiService {
-  ApiServiceImpl({
-    required this.baseUrl,
-    this.interceptors,
-    this.apiOptions,
-  }) {
-    _dio = Dio()
-      ..options.contentType = Headers.jsonContentType
-      ..options.connectTimeout = Duration(minutes: 1)
-      ..options.receiveTimeout = Duration(minutes: 1, seconds: 30);
+  ApiServiceImpl({required this.baseUrl, this.interceptors, this.apiOptions}) {
+    _dio =
+        Dio()
+          ..options.contentType = Headers.jsonContentType
+          ..options.connectTimeout = Duration(minutes: 1)
+          ..options.receiveTimeout = Duration(minutes: 1, seconds: 30);
 
     if (interceptors != null && interceptors!.isNotEmpty) {
       _dio!.interceptors.addAll(interceptors!);
     }
 
-    _dioFile = Dio()
-      ..options.connectTimeout = Duration(minutes: 1)
-      ..options.receiveTimeout = Duration(minutes: 1, seconds: 30);
+    _dioFile =
+        Dio()
+          ..options.connectTimeout = Duration(minutes: 1)
+          ..options.receiveTimeout = Duration(minutes: 1, seconds: 30);
 
     if (interceptors != null && interceptors!.isNotEmpty) {
       _dioFile!.interceptors.addAll(interceptors!);
@@ -34,9 +32,7 @@ class ApiServiceImpl implements ApiService {
 
     _refreshTokenDio = Dio();
     if (interceptors != null && interceptors!.isNotEmpty && isDebug) {
-      _refreshTokenDio!.interceptors.add(
-        RefreshTokenLoggingInterceptorImpl(),
-      );
+      _refreshTokenDio!.interceptors.add(RefreshTokenLoggingInterceptorImpl());
     }
   }
 
@@ -57,14 +53,16 @@ class ApiServiceImpl implements ApiService {
     String? body,
     ApiOptions? options,
   }) async {
-    return _dio!.get<T>(checkIfNotEmpty(url) ? '$url' : '$baseUrl$endpoint',
-        cancelToken: options?.cancelToken,
-        data: body,
-        options: Options(
-          headers: _formatHeaders(options),
-          receiveTimeout: options?.receiveTimeout,
-          sendTimeout: options?.sendTimeout,
-        ));
+    return _dio!.get<T>(
+      checkIfNotEmpty(url) ? '$url' : '$baseUrl$endpoint',
+      cancelToken: options?.cancelToken,
+      data: body,
+      options: Options(
+        headers: _formatHeaders(options),
+        receiveTimeout: options?.receiveTimeout,
+        sendTimeout: options?.sendTimeout,
+      ),
+    );
   }
 
   @override
@@ -87,28 +85,29 @@ class ApiServiceImpl implements ApiService {
       );
     }
 
-    return _dio!.post<T>(url ?? '$baseUrl$endpoint',
-        data: body,
-        cancelToken: options?.cancelToken,
-        options: Options(
-          headers: _formatHeaders(options),
-          receiveTimeout: options?.receiveTimeout,
-          sendTimeout: options?.sendTimeout,
-        ));
+    return _dio!.post<T>(
+      url ?? '$baseUrl$endpoint',
+      data: body,
+      cancelToken: options?.cancelToken,
+      options: Options(
+        headers: _formatHeaders(options),
+        receiveTimeout: options?.receiveTimeout,
+        sendTimeout: options?.sendTimeout,
+      ),
+    );
   }
 
   @override
-  Future<Response<T>> delete<T>({
-    String? endpoint,
-    ApiOptions? options,
-  }) async {
-    return _dio!.delete<T>('$baseUrl$endpoint',
-        cancelToken: options?.cancelToken,
-        options: Options(
-          headers: _formatHeaders(options),
-          receiveTimeout: options?.receiveTimeout,
-          sendTimeout: options?.sendTimeout,
-        ));
+  Future<Response<T>> delete<T>({String? endpoint, ApiOptions? options}) async {
+    return _dio!.delete<T>(
+      '$baseUrl$endpoint',
+      cancelToken: options?.cancelToken,
+      options: Options(
+        headers: _formatHeaders(options),
+        receiveTimeout: options?.receiveTimeout,
+        sendTimeout: options?.sendTimeout,
+      ),
+    );
   }
 
   @override
@@ -117,14 +116,16 @@ class ApiServiceImpl implements ApiService {
     String? body,
     ApiOptions? options,
   }) async {
-    return _dio!.put<T>('$baseUrl$endpoint',
-        cancelToken: options?.cancelToken,
-        data: body,
-        options: Options(
-          headers: _formatHeaders(options),
-          receiveTimeout: options?.receiveTimeout,
-          sendTimeout: options?.sendTimeout,
-        ));
+    return _dio!.put<T>(
+      '$baseUrl$endpoint',
+      cancelToken: options?.cancelToken,
+      data: body,
+      options: Options(
+        headers: _formatHeaders(options),
+        receiveTimeout: options?.receiveTimeout,
+        sendTimeout: options?.sendTimeout,
+      ),
+    );
   }
 
   @override
@@ -133,13 +134,15 @@ class ApiServiceImpl implements ApiService {
     String? body,
     ApiOptions? options,
   }) async {
-    return _dio!.patch<T>('$baseUrl$endpoint',
-        data: body,
-        options: Options(
-          headers: _formatHeaders(options),
-          receiveTimeout: options?.receiveTimeout,
-          sendTimeout: options?.sendTimeout,
-        ));
+    return _dio!.patch<T>(
+      '$baseUrl$endpoint',
+      data: body,
+      options: Options(
+        headers: _formatHeaders(options),
+        receiveTimeout: options?.receiveTimeout,
+        sendTimeout: options?.sendTimeout,
+      ),
+    );
   }
 
   @override
@@ -190,15 +193,17 @@ class ApiServiceImpl implements ApiService {
 
     final formData = FormData.fromMap(formDataMap);
 
-    return _dioFile!.post<T>(endpoint,
-        cancelToken: options?.cancelToken,
-        data: formData,
-        onSendProgress: onSendProgress,
-        options: Options(
-          headers: _formatHeaders(options),
-          receiveTimeout: options?.receiveTimeout,
-          sendTimeout: options?.sendTimeout,
-        ));
+    return _dioFile!.post<T>(
+      endpoint,
+      cancelToken: options?.cancelToken,
+      data: formData,
+      onSendProgress: onSendProgress,
+      options: Options(
+        headers: _formatHeaders(options),
+        receiveTimeout: options?.receiveTimeout,
+        sendTimeout: options?.sendTimeout,
+      ),
+    );
   }
 
   @override
@@ -239,29 +244,27 @@ class ApiServiceImpl implements ApiService {
   String getIsAuthRequiredKey() => Constants.isAuthRequiredAPIKey;
 
   Map<String, dynamic> _formatHeaders(ApiOptions? options) {
-    final headers = {
-      ...options?.headers ?? {},
-    };
+    final headers = {...options?.headers ?? {}};
     final _now = DateTime.now();
-    final _midnightTime =
-        DateTime(_now.year, _now.month, _now.day + 1).subtract(
-      Duration(
-        seconds: 1,
-      ),
-    );
+    final _midnightTime = DateTime(
+      _now.year,
+      _now.month,
+      _now.day + 1,
+    ).subtract(Duration(seconds: 1));
     final expireDuration =
         options?.expireDuration ?? apiOptions?.expireDuration;
     headers['appSpecificHeaders'] = {
       "forceRefreshCache":
           options?.refreshCache ?? apiOptions?.refreshCache ?? false,
-      "expirationTime": expireDuration != null
-          ? _now.add(expireDuration).toString()
-          : _midnightTime.toString(),
+      "expirationTime":
+          expireDuration != null
+              ? _now.add(expireDuration).toString()
+              : _midnightTime.toString(),
       "expireDuration": options?.expireDuration ?? apiOptions?.expireDuration,
       "ignoreAutoRefresh":
           options?.ignoreAutoRefresh ?? apiOptions?.ignoreAutoRefresh ?? false,
       "cacheResponse":
-          options?.cacheResponse ?? apiOptions?.cacheResponse ?? true
+          options?.cacheResponse ?? apiOptions?.cacheResponse ?? true,
     };
     return headers;
   }

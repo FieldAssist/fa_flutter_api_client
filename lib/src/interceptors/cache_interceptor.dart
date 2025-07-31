@@ -39,26 +39,24 @@ abstract class ApiCacheInterceptor extends Interceptor {
   Future<Response?> _getCacheResponse(RequestOptions options) async {
     try {
       final _now = DateTime.now();
-      final _midnightTime =
-          DateTime(_now.year, _now.month, _now.day + 1).subtract(
-        Duration(
-          seconds: 1,
-        ),
-      );
+      final _midnightTime = DateTime(
+        _now.year,
+        _now.month,
+        _now.day + 1,
+      ).subtract(Duration(seconds: 1));
 
       final _apiDataKey = _formStringFromRequestHeaders(options);
       final _storeRef = StoreRef.main();
-      final keyData = await sembastAppDb.get(_storeRef.record(_apiDataKey))
-          as Map<String, dynamic>?;
+      final keyData =
+          await sembastAppDb.get(_storeRef.record(_apiDataKey))
+              as Map<String, dynamic>?;
 
       if (keyData != null) {
         final isValid = isCacheValid(
           DateTime.parse(
             keyData['appSpecificHeaders']?['expirationTime'] ?? _midnightTime,
           ),
-          DateTime.parse(
-            keyData['appSpecificHeaders']?['cachedTime'],
-          ),
+          DateTime.parse(keyData['appSpecificHeaders']?['cachedTime']),
         );
         if (!isValid) {
           if (options.headers['appSpecificHeaders']?['ignoreAutoRefresh'] ??
@@ -113,46 +111,43 @@ abstract class ApiCacheInterceptor extends Interceptor {
 
   Future<void> saveResponse(Response response) async {
     final status = response.statusCode ?? 0;
-    final cacheResponse = response.requestOptions.headers['appSpecificHeaders']
-            ?['cacheResponse'] ??
+    final cacheResponse =
+        response
+            .requestOptions
+            .headers['appSpecificHeaders']?['cacheResponse'] ??
         true;
 
     if ((status == 200 || status == 201 || status == 202) && cacheResponse) {
-      final _apiDataKey =
-          _formStringFromRequestHeaders(response.requestOptions);
-      final _now = DateTime.now();
-      final _midnightTime =
-          DateTime(_now.year, _now.month, _now.day + 1).subtract(
-        Duration(
-          seconds: 1,
-        ),
+      final _apiDataKey = _formStringFromRequestHeaders(
+        response.requestOptions,
       );
+      final _now = DateTime.now();
+      final _midnightTime = DateTime(
+        _now.year,
+        _now.month,
+        _now.day + 1,
+      ).subtract(Duration(seconds: 1));
       final _storeRef = StoreRef.main();
 
-      await sembastAppDb.put(
-        sembastAppDb.record(_storeRef, _apiDataKey),
-        {
-          'appSpecificHeaders': {
-            "expirationTime": (response.requestOptions
-                        .headers['appSpecificHeaders']['expirationTime'] ??
-                    _midnightTime)
-                .toString(),
-            "cachedTime": DateTime.now().toString(),
-            "data": jsonEncode(response.data),
-            "status": cache_response_status
-          }
+      await sembastAppDb.put(sembastAppDb.record(_storeRef, _apiDataKey), {
+        'appSpecificHeaders': {
+          "expirationTime":
+              (response
+                          .requestOptions
+                          .headers['appSpecificHeaders']['expirationTime'] ??
+                      _midnightTime)
+                  .toString(),
+          "cachedTime": DateTime.now().toString(),
+          "data": jsonEncode(response.data),
+          "status": cache_response_status,
         },
-      );
+      });
 
-      logger.v(
-        '''************** ✅  CACHE INTERCEPTOR -> CACHED ✅ *********''',
-      );
+      logger.v('''************** ✅  CACHE INTERCEPTOR -> CACHED ✅ *********''');
     }
   }
 
-  String _formStringFromRequestHeaders(
-    RequestOptions options,
-  ) {
+  String _formStringFromRequestHeaders(RequestOptions options) {
     final url = options.uri.toString().replaceFirst(options.baseUrl, '');
     final body = jsonEncode(options.data ?? {});
     final queryParams = jsonEncode(options.queryParameters);

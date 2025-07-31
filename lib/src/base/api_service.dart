@@ -27,10 +27,7 @@ abstract class ApiService {
     ApiOptions? options,
   });
 
-  Future<Response<T>> delete<T>({
-    String? endpoint,
-    ApiOptions? options,
-  });
+  Future<Response<T>> delete<T>({String? endpoint, ApiOptions? options});
 
   Future<Response<T>> patch<T>({
     String? endpoint,

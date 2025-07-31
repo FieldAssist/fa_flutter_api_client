@@ -6,9 +6,7 @@ import 'network/network_info.dart';
 class MyNetworkInterceptor extends NetworkInterceptor {
   NetworkInfo networkInfo;
 
-  MyNetworkInterceptor({
-    required this.networkInfo,
-  });
+  MyNetworkInterceptor({required this.networkInfo});
 
   @override
   Future<bool> isInternetConnected() async {

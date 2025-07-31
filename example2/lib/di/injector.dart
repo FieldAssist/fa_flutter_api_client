@@ -25,10 +25,7 @@ class Injector {
       MyLoggingInterceptor(),
     ];
     locator.registerLazySingleton<ApiService>(() {
-      return ApiServiceImpl(
-        baseUrl: _debugBaseUrl,
-        interceptors: interceptors,
-      );
+      return ApiServiceImpl(baseUrl: _debugBaseUrl, interceptors: interceptors);
     });
   }
 }
