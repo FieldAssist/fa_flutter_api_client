@@ -6,9 +6,7 @@ import 'package:fa_flutter_api_client/fa_flutter_api_client.dart';
 import 'package:fa_flutter_api_client/src/utils/constants.dart';
 
 abstract class ErrorInterceptor extends Interceptor {
-  ErrorInterceptor({
-    this.showStackTrace = false,
-  });
+  ErrorInterceptor({this.showStackTrace = false});
 
   final bool showStackTrace;
   @override
@@ -112,10 +110,7 @@ abstract class ErrorInterceptor extends Interceptor {
 
     if (error.type == DioExceptionType.cancel) {
       return handler.reject(
-        RequestCancelError.fromDioError(
-          error,
-          showStackTrace,
-        ),
+        RequestCancelError.fromDioError(error, showStackTrace),
       );
     }
 
@@ -131,8 +126,9 @@ abstract class ErrorInterceptor extends Interceptor {
   }
 
   bool checkIsLoginApi(UnauthenticatedError error) {
-    return error.requestOptions.headers
-        .containsKey(Constants.isAuthRequiredAPIKey);
+    return error.requestOptions.headers.containsKey(
+      Constants.isAuthRequiredAPIKey,
+    );
   }
 
   /// It will be called when `401` occurs and [isAuthRequiredAPIKey] is not present in headers

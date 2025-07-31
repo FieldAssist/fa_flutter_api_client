@@ -8,11 +8,11 @@ class ClientError extends DioException {
     type = DioExceptionType.unknown,
     error,
   }) : super(
-          requestOptions: requestOptions,
-          response: response,
-          type: type,
-          error: error,
-        );
+         requestOptions: requestOptions,
+         response: response,
+         type: type,
+         error: error,
+       );
 
   @override
   String get message => response?.data ?? toString();
@@ -32,11 +32,11 @@ class ServerError extends DioException {
     error,
     this.showStackTrace = false,
   }) : super(
-          requestOptions: requestOptions,
-          response: response,
-          type: type,
-          error: error,
-        );
+         requestOptions: requestOptions,
+         response: response,
+         type: type,
+         error: error,
+       );
 
   /// showStackTrace true means DEV flavor
   final bool showStackTrace;
@@ -59,16 +59,16 @@ class UnauthorizedError extends DioException {
     type = DioExceptionType.unknown,
     error,
   }) : super(
-          requestOptions: requestOptions,
-          response: response,
-          type: type,
-          error: error,
-        );
+         requestOptions: requestOptions,
+         response: response,
+         type: type,
+         error: error,
+       );
 
   @override
   String toString() {
-    return checkIfNotEmpty(response?.data)
-        ? response?.data
+    return checkIfNotEmpty(response?.data?.toString())
+        ? response?.data?.toString() ?? "Unauthorized, Please try again"
         : 'Unauthorized, Please try again';
   }
 }
@@ -80,11 +80,11 @@ class PreconditionFailedError extends DioException {
     type = DioExceptionType.unknown,
     error,
   }) : super(
-          requestOptions: requestOptions,
-          response: response,
-          type: type,
-          error: error,
-        );
+         requestOptions: requestOptions,
+         response: response,
+         type: type,
+         error: error,
+       );
 
   @override
   String toString() {
@@ -101,11 +101,11 @@ class UnauthenticatedError extends DioException {
     type = DioExceptionType.unknown,
     error,
   }) : super(
-          requestOptions: requestOptions,
-          response: response,
-          type: type,
-          error: error,
-        );
+         requestOptions: requestOptions,
+         response: response,
+         type: type,
+         error: error,
+       );
 
   @override
   String toString() {
@@ -115,12 +115,12 @@ class UnauthenticatedError extends DioException {
   }
 
   UnauthenticatedError.fromDioError(DioException error)
-      : super(
-          requestOptions: error.requestOptions,
-          response: error.response,
-          type: error.type,
-          error: error,
-        );
+    : super(
+        requestOptions: error.requestOptions,
+        response: error.response,
+        type: error.type,
+        error: error,
+      );
 }
 
 class UnknownApiError extends DioException {
@@ -131,11 +131,11 @@ class UnknownApiError extends DioException {
     error,
     this.showStackTrace = false,
   }) : super(
-          requestOptions: requestOptions,
-          response: response,
-          type: type,
-          error: error,
-        );
+         requestOptions: requestOptions,
+         response: response,
+         type: type,
+         error: error,
+       );
 
   /// showStackTrace true means DEV flavor
   final bool showStackTrace;
@@ -156,11 +156,11 @@ class NoInternetError extends DioException {
     type = DioExceptionType.unknown,
     error,
   }) : super(
-          requestOptions: requestOptions,
-          response: response,
-          type: type,
-          error: error,
-        );
+         requestOptions: requestOptions,
+         response: response,
+         type: type,
+         error: error,
+       );
 
   @override
   String toString() {
@@ -175,11 +175,11 @@ class UnstableInternetError extends DioException {
     type = DioExceptionType.unknown,
     error,
   }) : super(
-          requestOptions: requestOptions,
-          response: response,
-          type: type,
-          error: error,
-        );
+         requestOptions: requestOptions,
+         response: response,
+         type: type,
+         error: error,
+       );
 
   @override
   String toString() {
@@ -195,20 +195,20 @@ class RequestCancelError extends DioException {
     error,
     this.showStackTrace = false,
   }) : super(
-          requestOptions: requestOptions,
-          response: response,
-          type: type,
-          error: error,
-        );
+         requestOptions: requestOptions,
+         response: response,
+         type: type,
+         error: error,
+       );
 
   RequestCancelError.fromDioError(DioException error, bool showStackTrace)
-      : showStackTrace = showStackTrace,
-        super(
-          type: error.type,
-          error: error.error,
-          requestOptions: error.requestOptions,
-          response: error.response,
-        );
+    : showStackTrace = showStackTrace,
+      super(
+        type: error.type,
+        error: error.error,
+        requestOptions: error.requestOptions,
+        response: error.response,
+      );
 
   /// showStackTrace true means DEV flavor
   final bool showStackTrace;

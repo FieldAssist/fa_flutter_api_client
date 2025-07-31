@@ -22,9 +22,7 @@ class _TestApiPageState extends State<TestApiPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Api Client'),
-      ),
+      appBar: AppBar(title: Text('Api Client')),
       body: Center(
         child: _isLoading ? CircularProgressIndicator() : Text(_data!),
       ),
