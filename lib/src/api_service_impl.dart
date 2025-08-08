@@ -11,20 +11,18 @@ import 'package:path/path.dart';
 
 class ApiServiceImpl implements ApiService {
   ApiServiceImpl({required this.baseUrl, this.interceptors, this.apiOptions}) {
-    _dio =
-        Dio()
-          ..options.contentType = Headers.jsonContentType
-          ..options.connectTimeout = Duration(minutes: 1)
-          ..options.receiveTimeout = Duration(minutes: 1, seconds: 30);
+    _dio = Dio()
+      ..options.contentType = Headers.jsonContentType
+      ..options.connectTimeout = Duration(minutes: 1)
+      ..options.receiveTimeout = Duration(minutes: 1, seconds: 30);
 
     if (interceptors != null && interceptors!.isNotEmpty) {
       _dio!.interceptors.addAll(interceptors!);
     }
 
-    _dioFile =
-        Dio()
-          ..options.connectTimeout = Duration(minutes: 1)
-          ..options.receiveTimeout = Duration(minutes: 1, seconds: 30);
+    _dioFile = Dio()
+      ..options.connectTimeout = Duration(minutes: 1)
+      ..options.receiveTimeout = Duration(minutes: 1, seconds: 30);
 
     if (interceptors != null && interceptors!.isNotEmpty) {
       _dioFile!.interceptors.addAll(interceptors!);
@@ -256,10 +254,9 @@ class ApiServiceImpl implements ApiService {
     headers['appSpecificHeaders'] = {
       "forceRefreshCache":
           options?.refreshCache ?? apiOptions?.refreshCache ?? false,
-      "expirationTime":
-          expireDuration != null
-              ? _now.add(expireDuration).toString()
-              : _midnightTime.toString(),
+      "expirationTime": expireDuration != null
+          ? _now.add(expireDuration).toString()
+          : _midnightTime.toString(),
       "expireDuration": options?.expireDuration ?? apiOptions?.expireDuration,
       "ignoreAutoRefresh":
           options?.ignoreAutoRefresh ?? apiOptions?.ignoreAutoRefresh ?? false,
@@ -272,5 +269,60 @@ class ApiServiceImpl implements ApiService {
   @override
   Future<String> requestTranformer(RequestOptions options) {
     return _dio!.transformer.transformRequest(options);
+  }
+
+  @override
+  Future<Response<T>> putFile<T>({
+    String? endpoint,
+    String? url,
+    String? keyName,
+    File? file,
+    ApiOptions? options,
+    ProgressCallback? onSendProgress,
+    Map<String, dynamic>? queryParameters,
+  }) async {
+    endpoint =
+        endpoint != null ? "$baseUrl$endpoint" : url ?? getFileUploadUrl();
+    if (queryParameters != null) {
+      var queryUrl = "";
+      for (final parameter in queryParameters.entries) {
+        queryUrl =
+            "${queryUrl.isEmpty ? '?' : '&'}${parameter.key}=${parameter.value}";
+      }
+      endpoint = "$endpoint$queryUrl";
+    }
+
+    if (file == null) {
+      throw const MyException("Attached file is null");
+    }
+
+    final data = file.openRead();
+
+    final fileName = basename(file.path);
+    var mimeType = mime(fileName);
+    mimeType ??= 'application/octet-stream';
+    final type = mimeType.split('/')[0];
+    final subType = mimeType.split('/')[1];
+
+    final headerMap = {
+      'x-ms-blob-type': 'BlockBlob',
+      'Content-Type': '$type/$subType',
+    };
+
+    options ??= ApiOptions();
+    options.headers ??= {};
+    options.headers!.addAll(headerMap);
+
+    return _dio!.put(
+      endpoint,
+      cancelToken: options.cancelToken,
+      data: data,
+      onSendProgress: onSendProgress,
+      options: Options(
+        headers: _formatHeaders(options),
+        receiveTimeout: options.receiveTimeout,
+        sendTimeout: options.sendTimeout,
+      ),
+    );
   }
 }
