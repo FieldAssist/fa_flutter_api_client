@@ -46,6 +46,16 @@ abstract class ApiService {
     Map<String, dynamic>? dataParameters,
   });
 
+  Future<Response<T>> putFile<T>({
+    String? endpoint,
+    String? url,
+    String? keyName,
+    File? file,
+    ApiOptions? options,
+    ProgressCallback? onSendProgress,
+    Map<String, dynamic>? queryParameters,
+});
+
   void setBaseUrl(String baseUrl);
 
   String getBaseUrl();
