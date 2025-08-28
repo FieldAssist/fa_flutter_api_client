@@ -56,6 +56,7 @@ class ApiServiceImpl implements ApiService {
       cancelToken: options?.cancelToken,
       data: body,
       options: Options(
+        responseType: options?.responseType,
         headers: _formatHeaders(options),
         receiveTimeout: options?.receiveTimeout,
         sendTimeout: options?.sendTimeout,
