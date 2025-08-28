@@ -10,7 +10,10 @@ class ApiOptions {
     this.expireDuration,
     this.cancelToken,
     this.ignoreAutoRefresh = true,
+    this.responseType,
+
   });
+  ResponseType? responseType;
 
   Map<String, dynamic>? headers;
 
