@@ -5,13 +5,13 @@ class ApiOptions {
     this.headers = const {},
     this.receiveTimeout,
     this.sendTimeout,
+    this.connectTimeout,
     this.refreshCache,
     this.cacheResponse,
     this.expireDuration,
     this.cancelToken,
     this.ignoreAutoRefresh = true,
     this.responseType,
-
   });
   ResponseType? responseType;
 
@@ -20,6 +20,8 @@ class ApiOptions {
   Duration? receiveTimeout;
 
   Duration? sendTimeout;
+
+  Duration? connectTimeout;
 
   bool? refreshCache;
 

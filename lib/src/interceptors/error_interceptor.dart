@@ -106,6 +106,15 @@ abstract class ErrorInterceptor extends Interceptor {
           error: error.error,
         ),
       );
+    } else if (error.type == DioExceptionType.connectionError) {
+      return handler.reject(
+        NoInternetError(
+          requestOptions: error.requestOptions,
+          response: error.response,
+          type: error.type,
+          error: error.error,
+        ),
+      );
     }
 
     if (error.type == DioExceptionType.cancel) {
