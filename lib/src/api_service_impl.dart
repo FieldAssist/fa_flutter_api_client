@@ -13,8 +13,10 @@ class ApiServiceImpl implements ApiService {
   ApiServiceImpl({required this.baseUrl, this.interceptors, this.apiOptions}) {
     _dio = Dio()
       ..options.contentType = Headers.jsonContentType
-      ..options.connectTimeout = Duration(minutes: 1)
-      ..options.receiveTimeout = Duration(minutes: 1, seconds: 30);
+      ..options.connectTimeout =
+          apiOptions?.connectTimeout ?? Duration(minutes: 1)
+      ..options.receiveTimeout =
+          apiOptions?.receiveTimeout ?? Duration(minutes: 1, seconds: 30);
 
     if (interceptors != null && interceptors!.isNotEmpty) {
       _dio!.interceptors.addAll(interceptors!);
