@@ -72,4 +72,6 @@ abstract class ApiService {
   String getIsAuthRequiredKey();
 
   Future<String> requestTranformer(RequestOptions options);
+
+  ApiService copyWith();
 }

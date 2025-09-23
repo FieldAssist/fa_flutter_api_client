@@ -328,4 +328,13 @@ class ApiServiceImpl implements ApiService {
       ),
     );
   }
+
+  @override
+  ApiService copyWith() {
+    return ApiServiceImpl(
+      baseUrl: baseUrl,
+      interceptors: interceptors,
+      apiOptions: apiOptions,
+    );
+  }
 }
