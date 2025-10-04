@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:fa_flutter_api_client/src/utils/api_type.dart';
 
 class ApiOptions {
   ApiOptions({
@@ -12,7 +13,9 @@ class ApiOptions {
     this.cancelToken,
     this.ignoreAutoRefresh = true,
     this.responseType,
+    this.apiType = ApiType.global,
   });
+
   ResponseType? responseType;
 
   Map<String, dynamic>? headers;
@@ -32,4 +35,6 @@ class ApiOptions {
   CancelToken? cancelToken;
 
   bool? ignoreAutoRefresh;
+
+  ApiType apiType;
 }

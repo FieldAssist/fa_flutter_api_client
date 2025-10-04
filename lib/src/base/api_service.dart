@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 
 import '../api_options/api_options.dart';
+import '../utils/api_type.dart';
 
 abstract class ApiService {
   Future<Response<T>> get<T>({
@@ -25,14 +26,20 @@ abstract class ApiService {
     String? endpoint,
     String? body,
     ApiOptions? options,
+    String? url,
   });
 
-  Future<Response<T>> delete<T>({String? endpoint, ApiOptions? options});
+  Future<Response<T>> delete<T>({
+    String? endpoint,
+    ApiOptions? options,
+    String? url,
+  });
 
   Future<Response<T>> patch<T>({
     String? endpoint,
     String? body,
     ApiOptions? options,
+    String? url,
   });
 
   Future<Response<T>> postFile<T>({
@@ -54,11 +61,21 @@ abstract class ApiService {
     ApiOptions? options,
     ProgressCallback? onSendProgress,
     Map<String, dynamic>? queryParameters,
-});
+  });
+
+  String callingUrl(
+    ApiType apiType,
+    String? url,
+    String? endpoint,
+  );
 
   void setBaseUrl(String baseUrl);
 
   String getBaseUrl();
+
+  void setBlobUrl(String? blobUrl);
+
+  String? getBlobUrl();
 
   String getFileUploadUrl();
 

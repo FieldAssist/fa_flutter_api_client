@@ -4,13 +4,19 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:fa_flutter_api_client/fa_flutter_api_client.dart';
 import 'package:fa_flutter_api_client/src/implementations/refresh_token_logging_interceptor_impl.dart';
+import 'package:fa_flutter_api_client/src/utils/api_type.dart';
 import 'package:fa_flutter_api_client/src/utils/constants.dart';
 import 'package:fa_flutter_core/fa_flutter_core.dart' hide ProgressCallback;
 import 'package:http_parser/http_parser.dart';
 import 'package:path/path.dart';
 
 class ApiServiceImpl implements ApiService {
-  ApiServiceImpl({required this.baseUrl, this.interceptors, this.apiOptions}) {
+  ApiServiceImpl({
+    required this.baseUrl,
+    this.interceptors,
+    this.apiOptions,
+    this.blobUrl,
+  }) {
     _dio = Dio()
       ..options.contentType = Headers.jsonContentType
       ..options.connectTimeout =
@@ -37,6 +43,7 @@ class ApiServiceImpl implements ApiService {
   }
 
   String baseUrl;
+  String? blobUrl;
   Dio? _dio;
   ApiOptions? apiOptions;
 
@@ -54,7 +61,7 @@ class ApiServiceImpl implements ApiService {
     ApiOptions? options,
   }) async {
     return _dio!.get<T>(
-      checkIfNotEmpty(url) ? '$url' : '$baseUrl$endpoint',
+      callingUrl(options?.apiType ?? ApiType.global, url, endpoint),
       cancelToken: options?.cancelToken,
       data: body,
       options: Options(
@@ -76,7 +83,7 @@ class ApiServiceImpl implements ApiService {
   }) async {
     if (isRefreshTokenRequest) {
       return _refreshTokenDio!.post<T>(
-        url ?? '$baseUrl$endpoint',
+        callingUrl(options?.apiType ?? ApiType.global, url, endpoint),
         data: body,
         options: Options(
           headers: _formatHeaders(options),
@@ -87,7 +94,7 @@ class ApiServiceImpl implements ApiService {
     }
 
     return _dio!.post<T>(
-      url ?? '$baseUrl$endpoint',
+      callingUrl(options?.apiType ?? ApiType.global, url, endpoint),
       data: body,
       cancelToken: options?.cancelToken,
       options: Options(
@@ -99,9 +106,13 @@ class ApiServiceImpl implements ApiService {
   }
 
   @override
-  Future<Response<T>> delete<T>({String? endpoint, ApiOptions? options}) async {
+  Future<Response<T>> delete<T>({
+    String? endpoint,
+    ApiOptions? options,
+    String? url,
+  }) async {
     return _dio!.delete<T>(
-      '$baseUrl$endpoint',
+      callingUrl(options?.apiType ?? ApiType.global, url, endpoint),
       cancelToken: options?.cancelToken,
       options: Options(
         headers: _formatHeaders(options),
@@ -116,9 +127,10 @@ class ApiServiceImpl implements ApiService {
     String? endpoint,
     String? body,
     ApiOptions? options,
+    String? url,
   }) async {
     return _dio!.put<T>(
-      '$baseUrl$endpoint',
+      callingUrl(options?.apiType ?? ApiType.global, url, endpoint),
       cancelToken: options?.cancelToken,
       data: body,
       options: Options(
@@ -134,9 +146,10 @@ class ApiServiceImpl implements ApiService {
     String? endpoint,
     String? body,
     ApiOptions? options,
+    String? url,
   }) async {
     return _dio!.patch<T>(
-      '$baseUrl$endpoint',
+      callingUrl(options?.apiType ?? ApiType.global, url, endpoint),
       data: body,
       options: Options(
         headers: _formatHeaders(options),
@@ -207,6 +220,24 @@ class ApiServiceImpl implements ApiService {
     );
   }
 
+  String callingUrl(
+    ApiType apiType,
+    String? url,
+    String? endpoint,
+  ) {
+    if (url != null && checkIfNotEmpty(url)) {
+      return url;
+    }
+    switch (apiType) {
+      case ApiType.global:
+        return '$baseUrl$endpoint';
+      case ApiType.blob:
+        return '$blobUrl$endpoint';
+      case ApiType.external:
+        return url!;
+    }
+  }
+
   @override
   void setBaseUrl(String baseUrl) {
     this.baseUrl = baseUrl;
@@ -215,6 +246,16 @@ class ApiServiceImpl implements ApiService {
   @override
   String getBaseUrl() {
     return baseUrl;
+  }
+
+  @override
+  void setBlobUrl(String? blobUrl) {
+    this.blobUrl = blobUrl;
+  }
+
+  @override
+  String? getBlobUrl() {
+    return blobUrl;
   }
 
   @override
