@@ -60,6 +60,10 @@ abstract class ApiService {
 
   String getBaseUrl();
 
+  void setBlobUrl(String blobUrl);
+
+  String getBlobUrl(String path);
+
   String getFileUploadUrl();
 
   Dio? getDioFile();
