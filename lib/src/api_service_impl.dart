@@ -10,7 +10,12 @@ import 'package:http_parser/http_parser.dart';
 import 'package:path/path.dart';
 
 class ApiServiceImpl implements ApiService {
-  ApiServiceImpl({required this.baseUrl, this.interceptors, this.apiOptions}) {
+  ApiServiceImpl({
+    required this.baseUrl,
+    this.blobUrl,
+    this.interceptors,
+    this.apiOptions,
+  }) {
     _dio = Dio()
       ..options.contentType = Headers.jsonContentType
       ..options.connectTimeout =
@@ -37,6 +42,7 @@ class ApiServiceImpl implements ApiService {
   }
 
   String baseUrl;
+  String? blobUrl;
   Dio? _dio;
   ApiOptions? apiOptions;
 
@@ -216,6 +222,14 @@ class ApiServiceImpl implements ApiService {
   String getBaseUrl() {
     return baseUrl;
   }
+
+  @override
+  void setBlobUrl(String blobUrl) {
+    this.blobUrl = blobUrl;
+  }
+
+  @override
+  String getBlobUrl(String path) => '$blobUrl$path';
 
   @override
   String getFileUploadUrl() {
