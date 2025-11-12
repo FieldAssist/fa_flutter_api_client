@@ -4,20 +4,21 @@ version: 2.0.1
 homepage: https://github.com/FieldAssist/fa_flutter_api_client.git
 
 environment:
-  sdk: '>=2.15.0 <4.0.0'
+  sdk: '>=3.9.0 <4.0.0'
 
 dependencies:
-  dio: ^5.8.0
+  dio: ^5.9.0
 
   # Core
   fa_flutter_core:
     git:
       url: https://github.com/FieldAssist/fa_flutter_core.git
-      ref: main
+      ref: flutter_3.35.7
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  flutter_lints: ^6.0.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
