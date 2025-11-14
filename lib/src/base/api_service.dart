@@ -62,7 +62,9 @@ abstract class ApiService {
 
   void setBlobUrl(String blobUrl);
 
-  String getBlobUrl(String path);
+  String? getBlobUrl();
+
+  String getBlobUrlPath(String path);
 
   String getFileUploadUrl();
 
