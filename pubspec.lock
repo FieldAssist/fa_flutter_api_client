@@ -261,8 +261,8 @@ packages:
     dependency: transitive
     description:
       path: "."
-      ref: "flutter_3.35.7"
-      resolved-ref: "1b0182a29a4d826dd0180350a354429ab9aef9dc"
+      ref: main
+      resolved-ref: e7fef8b027a4c04cb9e08466adcf6af897886c1e
       url: "https://github.com/FieldAssist/fa_dart_core.git"
     source: git
     version: "2.0.0+2"
@@ -279,8 +279,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "flutter_3.35.7"
-      resolved-ref: f57696e7b35fc02255c8512f2eb5893a15dd3c1c
+      ref: main
+      resolved-ref: "5208b4bc3a9aada457e04783112a9d1718ee98ce"
       url: "https://github.com/FieldAssist/fa_flutter_core.git"
     source: git
     version: "2.0.2"
@@ -727,10 +727,10 @@ packages:
     dependency: transitive
     description:
       name: google_maps_flutter_ios
-      sha256: ca02463b19a9abc7d31fcaf22631d021d647107467f741b917a69fa26659fd75
+      sha256: ef614d227db26552d54a0d2002bca12563852db83d2bfa2f8bc782588f27eb77
       url: "https://pub.dev"
     source: hosted
-    version: "2.15.5"
+    version: "2.15.6"
   google_maps_flutter_platform_interface:
     dependency: transitive
     description:
