@@ -8,6 +8,7 @@ environment:
 
 dependencies:
   dio: ^5.9.0
+  basic_utils: ^5.8.2
 
   # Core
   fa_flutter_core:

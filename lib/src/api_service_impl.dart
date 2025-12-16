@@ -1,9 +1,9 @@
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:fa_flutter_api_client/fa_flutter_api_client.dart';
 import 'package:fa_flutter_api_client/src/implementations/refresh_token_logging_interceptor_impl.dart';
+import 'package:fa_flutter_api_client/src/ssl_pinning/ssl_pinning_http_client_adapter.dart';
 import 'package:fa_flutter_api_client/src/utils/constants.dart';
 import 'package:fa_flutter_core/fa_flutter_core.dart' hide ProgressCallback;
 import 'package:http_parser/http_parser.dart';
@@ -15,6 +15,7 @@ class ApiServiceImpl implements ApiService {
     this.blobUrl,
     this.interceptors,
     this.apiOptions,
+    this.sslConfig,
   }) {
     _dio = Dio()
       ..options.contentType = Headers.jsonContentType
@@ -39,15 +40,20 @@ class ApiServiceImpl implements ApiService {
     if (interceptors != null && interceptors!.isNotEmpty && isDebug) {
       _refreshTokenDio!.interceptors.add(RefreshTokenLoggingInterceptorImpl());
     }
+    if (sslConfig != null) {
+      final sslPinningClientAdapter = SslPinningHttpClientAdapter(sslConfig!);
+      _dio!.httpClientAdapter = sslPinningClientAdapter;
+      _dioFile!.httpClientAdapter = sslPinningClientAdapter;
+    }
   }
 
   String baseUrl;
   String? blobUrl;
-  Dio? _dio;
   ApiOptions? apiOptions;
+  SslPinningConfig? sslConfig;
 
+  Dio? _dio;
   Dio? _refreshTokenDio;
-
   Dio? _dioFile;
 
   final List<Interceptor>? interceptors;
@@ -166,8 +172,9 @@ class ApiServiceImpl implements ApiService {
     // if the endpoint is not passed use url parameter
     // if both of them are null then use default fileUploadUrl
 
-    endpoint =
-        endpoint != null ? "$baseUrl$endpoint" : url ?? getFileUploadUrl();
+    endpoint = endpoint != null
+        ? "$baseUrl$endpoint"
+        : url ?? getFileUploadUrl();
     if (queryParameters != null) {
       var queryUrl = "";
       for (final parameter in queryParameters.entries) {
@@ -298,8 +305,9 @@ class ApiServiceImpl implements ApiService {
     ProgressCallback? onSendProgress,
     Map<String, dynamic>? queryParameters,
   }) async {
-    endpoint =
-        endpoint != null ? "$baseUrl$endpoint" : url ?? getFileUploadUrl();
+    endpoint = endpoint != null
+        ? "$baseUrl$endpoint"
+        : url ?? getFileUploadUrl();
     if (queryParameters != null) {
       var queryUrl = "";
       for (final parameter in queryParameters.entries) {
