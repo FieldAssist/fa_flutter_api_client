@@ -236,7 +236,10 @@ class ApiServiceImpl implements ApiService {
   }
 
   @override
-  String getBlobUrl(String path) => '$blobUrl$path';
+  String? getBlobUrl() => blobUrl;
+
+  @override
+  String getBlobUrlPath(String path) => '$blobUrl$path';
 
   @override
   String getFileUploadUrl() {
