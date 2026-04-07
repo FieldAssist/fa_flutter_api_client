@@ -29,22 +29,13 @@ class SslPinningHttpClientAdapter implements HttpClientAdapter {
   final IOHttpClientAdapter _ioAdapter = IOHttpClientAdapter();
 
   SslPinningHttpClientAdapter(this.config) {
-    // Configure the underlying adapter's HttpClient creation
-    _ioAdapter.createHttpClient = () {
-      // Create SecurityContext that doesn't trust any CA certificates by default
-      // This forces ALL certificates (valid or invalid) to go through badCertificateCallback
-      final securityContext = SecurityContext(withTrustedRoots: false);
-
-      final client = HttpClient(context: securityContext);
-
-      // CRITICAL: This callback now handles ALL certificates since we disabled trusted roots
-      // Every certificate must pass our fingerprint validation
-      client.badCertificateCallback =
-          (X509Certificate cert, String host, int port) {
-            return _validateCertificate(cert, host, port);
-          };
-
-      return client;
+    // validateCertificate fires post-handshake for ALL HTTPS connections with
+    // SSL_get_peer_certificate() = the leaf cert. Standard CA chain validation
+    // still runs (expired certs, hostname mismatches are rejected by the OS),
+    // and this adds SPKI fingerprint pinning on top — blocking rogue CAs and
+    // MITM tools regardless of what is installed in the device trust store.
+    _ioAdapter.validateCertificate = (cert, host, port) {
+      return _validateCertificate(cert, host, port);
     };
   }
 
@@ -62,8 +53,9 @@ class SslPinningHttpClientAdapter implements HttpClientAdapter {
     _ioAdapter.close(force: force);
   }
 
-  /// Validate SSL certificate against pinned fingerprints
-  bool _validateCertificate(X509Certificate cert, String host, int port) {
+  /// Validate SSL certificate against pinned fingerprints.
+  /// cert is the leaf certificate provided by validateCertificate.
+  bool _validateCertificate(X509Certificate? cert, String host, int port) {
     if (!config.enabled) {
       return true;
     }
@@ -78,6 +70,8 @@ class SslPinningHttpClientAdapter implements HttpClientAdapter {
         return true;
       }
     }
+
+    if (cert == null) return false;
 
     // Domain is pinned - validate certificate fingerprint
     final expectedFingerprints = config.getFingerprintsForDomain(host);
