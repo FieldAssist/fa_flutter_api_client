@@ -17,7 +17,12 @@ class ApiServiceImpl implements ApiService {
     this.apiOptions,
     this.sslConfig,
   }) {
+    final decodeThreshold = apiOptions?.isolateDecodeThreshold ?? 50 * 1024;
+    Transformer buildTransformer() =>
+        FusedTransformer(contentLengthIsolateThreshold: decodeThreshold);
+
     _dio = Dio()
+      ..transformer = buildTransformer()
       ..options.contentType = Headers.jsonContentType
       ..options.connectTimeout =
           apiOptions?.connectTimeout ?? Duration(minutes: 1)
@@ -29,6 +34,7 @@ class ApiServiceImpl implements ApiService {
     }
 
     _dioFile = Dio()
+      ..transformer = buildTransformer()
       ..options.connectTimeout = Duration(minutes: 1)
       ..options.receiveTimeout = Duration(minutes: 1, seconds: 30);
 
@@ -36,7 +42,7 @@ class ApiServiceImpl implements ApiService {
       _dioFile!.interceptors.addAll(interceptors!);
     }
 
-    _refreshTokenDio = Dio();
+    _refreshTokenDio = Dio()..transformer = buildTransformer();
     if (interceptors != null && interceptors!.isNotEmpty && isDebug) {
       _refreshTokenDio!.interceptors.add(RefreshTokenLoggingInterceptorImpl());
     }
