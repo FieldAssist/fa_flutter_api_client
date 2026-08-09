@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:fa_flutter_api_client/fa_flutter_api_client.dart';
+import 'package:fa_flutter_api_client/src/compression/brotli_transformer.dart';
 import 'package:fa_flutter_api_client/src/implementations/refresh_token_logging_interceptor_impl.dart';
 import 'package:fa_flutter_api_client/src/ssl_pinning/ssl_pinning_http_client_adapter.dart';
 import 'package:fa_flutter_api_client/src/utils/constants.dart';
@@ -16,6 +17,7 @@ class ApiServiceImpl implements ApiService {
     this.interceptors,
     this.apiOptions,
     this.sslConfig,
+    this.enableCompression = false,
   }) {
     _dio = Dio()
       ..options.contentType = Headers.jsonContentType
@@ -28,6 +30,11 @@ class ApiServiceImpl implements ApiService {
       _dio!.interceptors.addAll(interceptors!);
     }
 
+    if (enableCompression) {
+      _dio!.options.headers['Accept-Encoding'] = 'br';
+      _dio!.transformer = BrotliTransformer();
+    }
+
     _dioFile = Dio()
       ..options.connectTimeout = Duration(minutes: 1)
       ..options.receiveTimeout = Duration(minutes: 1, seconds: 30);
@@ -36,9 +43,18 @@ class ApiServiceImpl implements ApiService {
       _dioFile!.interceptors.addAll(interceptors!);
     }
 
+    if (enableCompression) {
+      _dioFile!.options.headers['Accept-Encoding'] = 'br';
+      _dioFile!.transformer = BrotliTransformer();
+    }
+
     _refreshTokenDio = Dio();
     if (interceptors != null && interceptors!.isNotEmpty && isDebug) {
       _refreshTokenDio!.interceptors.add(RefreshTokenLoggingInterceptorImpl());
+    }
+    if (enableCompression) {
+      _refreshTokenDio!.options.headers['Accept-Encoding'] = 'br';
+      _refreshTokenDio!.transformer = BrotliTransformer();
     }
     if (sslConfig != null) {
       final sslPinningClientAdapter = SslPinningHttpClientAdapter(sslConfig!);
@@ -51,6 +67,7 @@ class ApiServiceImpl implements ApiService {
   String? blobUrl;
   ApiOptions? apiOptions;
   SslPinningConfig? sslConfig;
+  bool enableCompression;
 
   Dio? _dio;
   Dio? _refreshTokenDio;
