@@ -30,10 +30,7 @@ class ApiServiceImpl implements ApiService {
       _dio!.interceptors.addAll(interceptors!);
     }
 
-    if (enableCompression) {
-      _dio!.options.headers['Accept-Encoding'] = 'br';
-      _dio!.transformer = BrotliTransformer();
-    }
+    _handleCompression(_dio!);
 
     _dioFile = Dio()
       ..options.connectTimeout = Duration(minutes: 1)
@@ -43,19 +40,13 @@ class ApiServiceImpl implements ApiService {
       _dioFile!.interceptors.addAll(interceptors!);
     }
 
-    if (enableCompression) {
-      _dioFile!.options.headers['Accept-Encoding'] = 'br';
-      _dioFile!.transformer = BrotliTransformer();
-    }
+    _handleCompression(_dioFile!);
 
     _refreshTokenDio = Dio();
     if (interceptors != null && interceptors!.isNotEmpty && isDebug) {
       _refreshTokenDio!.interceptors.add(RefreshTokenLoggingInterceptorImpl());
     }
-    if (enableCompression) {
-      _refreshTokenDio!.options.headers['Accept-Encoding'] = 'br';
-      _refreshTokenDio!.transformer = BrotliTransformer();
-    }
+    _handleCompression(_refreshTokenDio!);
     if (sslConfig != null) {
       final sslPinningClientAdapter = SslPinningHttpClientAdapter(sslConfig!);
       _dio!.httpClientAdapter = sslPinningClientAdapter;
@@ -74,6 +65,15 @@ class ApiServiceImpl implements ApiService {
   Dio? _dioFile;
 
   final List<Interceptor>? interceptors;
+
+  void _handleCompression(Dio dio) {
+    if (enableCompression) {
+      dio.options.headers['Accept-Encoding'] = 'br';
+      dio.transformer = BrotliTransformer();
+    } else {
+      dio.options.headers['Accept-Encoding'] = 'identity';
+    }
+  }
 
   @override
   Future<Response<T>> get<T>({
