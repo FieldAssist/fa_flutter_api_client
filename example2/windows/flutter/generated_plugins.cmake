@@ -8,7 +8,6 @@ list(APPEND FLUTTER_PLUGIN_LIST
   firebase_core
   geolocator_windows
   permission_handler_windows
-  realm
   url_launcher_windows
 )
 

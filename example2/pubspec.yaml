@@ -37,8 +37,6 @@ dependencies:
     git:
       url: https://github.com/FieldAssist/fa_flutter_core.git
       ref: new/3.47
-  realm: ^20.2.0
-
 dev_dependencies:
   flutter_test:
     sdk: flutter
