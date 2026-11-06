@@ -4,10 +4,10 @@ version: 2.0.1
 homepage: https://github.com/FieldAssist/fa_flutter_api_client.git
 
 environment:
-  sdk: '>=3.9.0 <4.0.0'
+  sdk: '>=3.13.0 <4.0.0'
 
 dependencies:
-  dio: ^5.9.0
+  dio: ^5.11.1
   basic_utils: ^5.8.2
   brotli: ^0.6.0
 
@@ -15,7 +15,7 @@ dependencies:
   fa_flutter_core:
     git:
       url: https://github.com/FieldAssist/fa_flutter_core.git
-      ref: main
+      ref: new/3.47
 
 dev_dependencies:
   flutter_test:
