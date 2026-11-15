@@ -1,6 +1,13 @@
 import 'package:dio/dio.dart';
 import 'package:fa_flutter_core/fa_flutter_core.dart';
 
+/// [response]'s body as text, or [fallback] when it is empty. Dio hands a
+/// JSON body over already decoded, so it can be a Map or List, not a String.
+String _bodyOr(Response? response, String fallback) {
+  final body = response?.data?.toString();
+  return checkIfNotEmpty(body) ? body! : fallback;
+}
+
 class ClientError extends DioException {
   ClientError({
     requestOptions,
@@ -15,7 +22,7 @@ class ClientError extends DioException {
        );
 
   @override
-  String get message => response?.data ?? toString();
+  String get message => response?.data?.toString() ?? toString();
 
   @override
   String toString() {
@@ -67,9 +74,7 @@ class UnauthorizedError extends DioException {
 
   @override
   String toString() {
-    return checkIfNotEmpty(response?.data?.toString())
-        ? response?.data?.toString() ?? "Unauthorized, Please try again"
-        : 'Unauthorized, Please try again';
+    return _bodyOr(response, 'Unauthorized, Please try again');
   }
 }
 
@@ -88,9 +93,7 @@ class PreconditionFailedError extends DioException {
 
   @override
   String toString() {
-    return checkIfNotEmpty(response?.data)
-        ? response?.data
-        : 'Access to the target resource has been denied';
+    return _bodyOr(response, 'Access to the target resource has been denied');
   }
 }
 
@@ -109,9 +112,7 @@ class UnauthenticatedError extends DioException {
 
   @override
   String toString() {
-    return checkIfNotEmpty(response?.data)
-        ? response?.data
-        : 'Unauthenticated, Please try again';
+    return _bodyOr(response, 'Unauthenticated, Please try again');
   }
 
   UnauthenticatedError.fromDioError(DioException error)
